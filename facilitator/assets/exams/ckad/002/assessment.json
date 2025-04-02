@@ -1,0 +1,814 @@
+{
+    "questions": [
+        {
+            "id": "1",
+            "namespace": "core-concepts",
+            "machineHostname": "ckad9988",
+            "question": "Create a namespace called `core-concepts` and a pod with image `nginx` called `nginx-pod` in this namespace.\n\nThe pod should have the following labels: `app=web`, `env=prod`.",
+            "concepts": ["core-concepts", "pods", "namespaces", "labels"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q1_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name",
+                    "verificationScriptFile": "q1_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Pod is using correct image",
+                    "verificationScriptFile": "q1_s3_validate_pod_image.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "4",
+                    "description": "Pod has correct labels",
+                    "verificationScriptFile": "q1_s4_validate_pod_labels.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "namespace": "multi-container",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `multi-container-pod` in the `multi-container` namespace with \ntwo containers:\n1. Container 1 - \nName: `main-container`, \nImage: `nginx`\n2. Container 2 - \nName: `sidecar-container`, \nImage: `busybox`, \nCommand: `['sh', '-c', 'while true; do echo $(date) >> /var/log/app.log; sleep 5; done']`\n\nCreate a shared volume named `log-volume` that both containers can access. Mount this volume at `/var/log` in both containers. Ensure the namespace exists before creating the pod.",
+            "concepts": ["multi-container-pods", "volumes", "namespaces"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q2_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod exists with two containers",
+                    "verificationScriptFile": "q2_s2_validate_pod_containers.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Container images are correct",
+                    "verificationScriptFile": "q2_s3_validate_container_images.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Shared volume is configured correctly",
+                    "verificationScriptFile": "q2_s4_validate_shared_volume.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "namespace": "pod-design",
+            "machineHostname": "ckad9988",
+            "question": "Create a Deployment in the `pod-design` namespace with the following specifications:\n- Name: `frontend`\n- Replicas: `3`\n- Image: `nginx:1.19.0`\n- Labels: `app=frontend, tier=frontend`\n- Pod Labels: same as deployment labels\n\nThen create a service `frontend-svc` that exposes the deployment on port `80`, targeting container port `80`, and is of type `ClusterIP`. Ensure the namespace exists before creating the resources.",
+            "concepts": ["deployments", "services", "labels", "selectors"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q3_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Deployment is created with correct specifications",
+                    "verificationScriptFile": "q3_s2_validate_deployment.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "3",
+                    "description": "Deployment has correct number of replicas",
+                    "verificationScriptFile": "q3_s3_validate_replicas.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "4",
+                    "description": "Service is created correctly",
+                    "verificationScriptFile": "q3_s4_validate_service.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "4",
+            "namespace": "configuration",
+            "machineHostname": "ckad9988",
+            "question": "Create a ConfigMap named `app-config` in the `configuration` namespace \nwith the following data:\n`DB_HOST=mysql`\n`DB_PORT=3306`\n`DB_NAME=myapp`\n\nThen create a Secret named `app-secret` \nwith the following data:\n`DB_USER=admin`\n`DB_PASSWORD=s3cr3t`\n\nFinally, create a Pod named `app-pod` using the `nginx` image that uses both the ConfigMap and Secret. \n\nMount the ConfigMap as environment variables and the Secret as a volume at `/etc/app-secret`. Ensure the namespace exists before creating the resources.",
+            "concepts": ["configmaps", "secrets", "environment-variables", "volumes"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q4_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "ConfigMap is created correctly",
+                    "verificationScriptFile": "q4_s2_validate_configmap.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Secret is created correctly",
+                    "verificationScriptFile": "q4_s3_validate_secret.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pod uses ConfigMap as environment variables",
+                    "verificationScriptFile": "q4_s4_validate_pod_configmap.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Pod mounts Secret as volume",
+                    "verificationScriptFile": "q4_s5_validate_pod_secret.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "5",
+            "namespace": "observability",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `probes-pod` in the `observability` namespace using the image `nginx`. Configure the following probes:\n\n1. Liveness probe: HTTP GET request to path `/healthz` on port `80`, with initialDelaySeconds=`10` and periodSeconds=`5`\n\n2. Readiness probe: HTTP GET request to path `/` on port `80`, with initialDelaySeconds=`5` and periodSeconds=`3`\n\nAlso, configure the pod with resource requests of CPU=`100m` and memory=`128Mi`, and resource limits of CPU=`200m` and memory=`256Mi`. \nEnsure the namespace exists before creating the pod.",
+            "concepts": ["probes", "liveness", "readiness", "resource-limits"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q5_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name and image",
+                    "verificationScriptFile": "q5_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "3",
+                    "description": "Liveness probe is configured correctly",
+                    "verificationScriptFile": "q5_s3_validate_liveness.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Readiness probe is configured correctly",
+                    "verificationScriptFile": "q5_s4_validate_readiness.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Resource limits and requests are configured correctly",
+                    "verificationScriptFile": "q5_s5_validate_resources.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "6",
+            "namespace": "services",
+            "machineHostname": "ckad9988",
+            "question": "Create a Deployment named `web-app` in the `services` namespace with 3 replicas using the image `nginx:alpine`. \nLabel the pods with `app=web`.\n\nExpose the deployment with three different services:\n1. A ClusterIP service named `web-svc-cluster` on port `80`\n2. A NodePort service named `web-svc-nodeport` on port `80`, using nodePort `30080`\n3. A LoadBalancer service named `web-svc-lb` on port `80`\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["services", "deployments", "clusterip", "nodeport", "loadbalancer"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q6_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Deployment is created correctly",
+                    "verificationScriptFile": "q6_s2_validate_deployment.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "ClusterIP service is configured correctly",
+                    "verificationScriptFile": "q6_s3_validate_clusterip.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "NodePort service is configured correctly",
+                    "verificationScriptFile": "q6_s4_validate_nodeport.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "LoadBalancer service is configured correctly",
+                    "verificationScriptFile": "q6_s5_validate_loadbalancer.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "7",
+            "namespace": "state",
+            "machineHostname": "ckad9988",
+            "question": "Set up persistent storage for a database application in the `state` namespace:\n\n1. Create a PersistentVolume named `db-pv` with storage capacity of `1Gi`, access mode `ReadWriteOnce`, hostPath type pointing to `/mnt/data`, and reclaim policy `Retain`\n2. Create a PersistentVolumeClaim named `db-pvc` that requests `500Mi` storage with access mode `ReadWriteOnce`\n3. Create a Pod named `db-pod` using the `mysql:5.7` image that mounts the PVC at `/var/lib/mysql`\n4. Set the following environment variables for the pod: \n`MYSQL_ROOT_PASSWORD=rootpassword`, \n`MYSQL_DATABASE=mydb`, \n`MYSQL_USER=myuser`, \n`MYSQL_PASSWORD=mypassword`\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["persistent-volumes", "persistent-volume-claims", "volumes", "environment-variables"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q7_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "PersistentVolume is created correctly",
+                    "verificationScriptFile": "q7_s2_validate_pv.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "PersistentVolumeClaim is created correctly",
+                    "verificationScriptFile": "q7_s3_validate_pvc.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pod is created with correct image",
+                    "verificationScriptFile": "q7_s4_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Pod mounts the PVC correctly",
+                    "verificationScriptFile": "q7_s5_validate_pod_mount.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "6",
+                    "description": "Pod has correct environment variables",
+                    "verificationScriptFile": "q7_s6_validate_pod_env.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "id": "8",
+            "namespace": "pod-design",
+            "machineHostname": "ckad9988",
+            "question": "Create a CronJob in the `pod-design` namespace with the following specifications:\n\n1. Name: `backup-job`\n2. Schedule: Every 5 minutes\n3. Container image: `busybox`\n4. Command: `['sh', '-c', 'echo Backup started: $(date); sleep 30; echo Backup completed: $(date)']`\n5. Configure the job with a restart policy of `OnFailure`\n6. Set a deadline of `100` seconds for the job to complete\n\nEnsure the namespace exists before creating the resource.",
+            "concepts": ["cronjobs", "jobs", "scheduling"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace exists",
+                    "verificationScriptFile": "q8_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "CronJob is created with correct name and schedule",
+                    "verificationScriptFile": "q8_s2_validate_cronjob.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "3",
+                    "description": "CronJob uses correct image and command",
+                    "verificationScriptFile": "q8_s3_validate_cronjob_container.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "CronJob has correct restart policy and deadline",
+                    "verificationScriptFile": "q8_s4_validate_cronjob_policy.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "9",
+            "namespace": "troubleshooting",
+            "machineHostname": "ckad9988",
+            "question": "There is a deployment named `broken-deployment` in the `troubleshooting` namespace that is not functioning correctly. The deployment should have `3` replicas of `nginx:1.19` pods, but it`s failing.\n\nFind and fix the issue(s) with the deployment. Possible issues might include:\n- Incorrect image name or tag\n- Resource constraints that can`t be satisfied\n- Configuration problems with the pod template\n- Network policy restrictions\n\nEnsure the deployment functions correctly with 3 replicas running.",
+            "concepts": ["troubleshooting", "deployments", "debugging"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Deployment exists",
+                    "verificationScriptFile": "q9_s1_validate_deployment_exists.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Deployment has 3 replicas",
+                    "verificationScriptFile": "q9_s2_validate_deployment_replicas.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "All pods are in running state",
+                    "verificationScriptFile": "q9_s3_validate_pods_running.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "4",
+                    "description": "Pods are using correct image",
+                    "verificationScriptFile": "q9_s4_validate_pods_image.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "10",
+            "namespace": "networking",
+            "machineHostname": "ckad9988",
+            "question": "Create a NetworkPolicy in the `networking` namespace that restricts access to the `secure-db` pod with label `app=db` as follows:\n\n1. Allow ingress traffic only from pods with the label `role=frontend` on port `5432`\n2. Allow egress traffic only to pods with the label `role=monitoring` on port `8080`\n3. Deny all other traffic\n\nThen create three pods for testing:\n- A pod named `secure-db` with label `app=db` using image `postgres:12`\n- A pod named `frontend` with label `role=frontend` using image `nginx`\n- A pod named `monitoring` with label `role=monitoring` using image `nginx`\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["network-policies", "pods", "labels", "security"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q10_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "All three pods are created correctly",
+                    "verificationScriptFile": "q10_s2_validate_pods.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "NetworkPolicy exists with correct name",
+                    "verificationScriptFile": "q10_s3_validate_networkpolicy_exists.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "4",
+                    "description": "NetworkPolicy has correct ingress rules",
+                    "verificationScriptFile": "q10_s4_validate_networkpolicy_ingress.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "5",
+                    "description": "NetworkPolicy has correct egress rules",
+                    "verificationScriptFile": "q10_s5_validate_networkpolicy_egress.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                }
+            ]
+        },
+        {
+            "id": "11",
+            "namespace": "security",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `secure-app` in the `security` namespace with the following security configurations:\n\n1. Run as non-root user (UID: `1000`)\n2. Set security context to drop all capabilities\n3. Set `readOnlyRootFilesystem` to true\n4. Add a security context to the container to run as non-root\n5. Use the `nginx:alpine` image\n\nEnsure the namespace exists before creating the pod.",
+            "concepts": ["security-context", "pod-security", "container-security"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q11_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name and image",
+                    "verificationScriptFile": "q11_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "3",
+                    "description": "Pod runs as non-root user",
+                    "verificationScriptFile": "q11_s3_validate_user.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Security context is configured correctly",
+                    "verificationScriptFile": "q11_s4_validate_security_context.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                }
+            ]
+        },
+        {
+            "id": "12",
+            "namespace": "storage",
+            "machineHostname": "ckad9988",
+            "question": "Create a StatefulSet named `web` in the `storage` namespace with the following specifications:\n\n1. Use image `nginx:stable`\n2. Replicas: `3`\n3. Service name: `web`\n4. Volume claim template with storage class `standard` and size 1Gi\n5. Mount the volume at `/usr/share/nginx/html`\n\nAlso create a headless service named `web` to expose the StatefulSet.\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["statefulsets", "persistent-volume-claims", "headless-services"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q12_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "StatefulSet is created with correct specifications",
+                    "verificationScriptFile": "q12_s2_validate_statefulset.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "3",
+                    "description": "Headless service is configured correctly",
+                    "verificationScriptFile": "q12_s3_validate_service.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Volume claim template is configured correctly",
+                    "verificationScriptFile": "q12_s4_validate_volume_claim.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "13",
+            "namespace": "jobs",
+            "machineHostname": "ckad9988",
+            "question": "Create a Job named `data-processor` in the `jobs` namespace with the following specifications:\n\n1. Use image `busybox`\n2. Command: `['sh', '-c', 'for i in $(seq 1 5); do echo Processing item $i; sleep 2; done']`\n3. Set restart policy to `Never`\n4. Set backoff limit to `4`\n5. Set active deadline seconds to `30`\n\nEnsure the namespace exists before creating the job.",
+            "concepts": ["jobs", "restart-policy", "backoff-limit"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q13_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Job is created with correct specifications",
+                    "verificationScriptFile": "q13_s2_validate_job.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "3",
+                    "description": "Job has correct restart policy and backoff limit",
+                    "verificationScriptFile": "q13_s3_validate_job_policy.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Job has correct active deadline seconds",
+                    "verificationScriptFile": "q13_s4_validate_job_deadline.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "14",
+            "namespace": "init-containers",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `app-with-init` in the `init-containers` namespace with the following specifications:\n\n1. Main container using image `nginx`\n2. Init container using image `busybox` with command: `['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done']`\n3. Create a service named `myservice` using image `nginx`\n4. Share a volume between init container and main container at `/shared`\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["init-containers", "services", "shared-volumes"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q14_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with init container",
+                    "verificationScriptFile": "q14_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Service is created correctly",
+                    "verificationScriptFile": "q14_s3_validate_service.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Shared volume is configured correctly",
+                    "verificationScriptFile": "q14_s4_validate_shared_volume.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "15",
+            "namespace": "resource-management",
+            "machineHostname": "ckad9988",
+            "question": "Create a ResourceQuota named `compute-quota` in the `resource-management` namespace with the following limits:\n\n1. CPU: `4` cores\n2. Memory: `8Gi`\n3. Pods: `10`\n4. Services: `5`\n5. PersistentVolumeClaims: `5`\n\nThen create a LimitRange named `compute-limits` with:\n\n1. Default CPU request: `100m`\n2. Default CPU limit: `200m`\n3. Default memory request: `128Mi`\n4. Default memory limit: `256Mi`\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["resource-quotas", "limit-ranges", "resource-limits"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q15_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "ResourceQuota is created with correct limits",
+                    "verificationScriptFile": "q15_s2_validate_resource_quota.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                },
+                {
+                    "id": "3",
+                    "description": "LimitRange is created with correct defaults",
+                    "verificationScriptFile": "q15_s3_validate_limit_range.sh",
+                    "expectedOutput": "0",
+                    "weightage": 3
+                }
+            ]
+        },
+        {
+            "id": "16",
+            "namespace": "health-checks",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `health-check-pod` in the `health-checks` namespace with the following specifications:\n\n1. Use image `nginx`\n\n2. Configure startup probe:\n   - HTTP GET on port 80\n   - Initial delay: 10s\n   - Period: 3s\n   - Failure threshold: 3\n\n3. Configure liveness probe:\n   - HTTP GET on port 80\n   - Initial delay: 15s\n   - Period: 5s\n   - Failure threshold: 3\n\n4. Configure readiness probe:\n   - HTTP GET on port 80\n   - Initial delay: 5s\n   - Period: 3s\n   - Failure threshold: 3\n\nEnsure the namespace exists before creating the pod.",
+            "concepts": ["startup-probes", "liveness-probes", "readiness-probes"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q16_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name and image",
+                    "verificationScriptFile": "q16_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "3",
+                    "description": "Startup probe is configured correctly",
+                    "verificationScriptFile": "q16_s3_validate_startup_probe.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Liveness probe is configured correctly",
+                    "verificationScriptFile": "q16_s4_validate_liveness_probe.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Readiness probe is configured correctly",
+                    "verificationScriptFile": "q16_s5_validate_readiness_probe.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "17",
+            "namespace": "pod-lifecycle",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `lifecycle-pod` in the `pod-lifecycle` namespace with the following specifications:\n\n1. Use image `nginx`\n2. Add postStart hook that creates a file `/usr/share/nginx/html/welcome.txt` with content `Welcome to the pod!`\n3. Add preStop hook that waits for `10` seconds\n4. Set termination grace period to `30` seconds\n\nEnsure the namespace exists before creating the pod.",
+            "concepts": ["lifecycle-hooks", "post-start", "pre-stop", "termination"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q17_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name and image",
+                    "verificationScriptFile": "q17_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "3",
+                    "description": "Post-start hook is configured correctly",
+                    "verificationScriptFile": "q17_s3_validate_post_start.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pre-stop hook is configured correctly",
+                    "verificationScriptFile": "q17_s4_validate_pre_stop.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Termination grace period is set correctly",
+                    "verificationScriptFile": "q17_s5_validate_grace_period.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "id": "18",
+            "namespace": "pod-scheduling",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `scheduled-pod` in the `pod-scheduling` namespace with the following specifications:\n\n1. Use image `nginx`\n2. Add node selector to run only on nodes with label `environment=production`\n3. Add toleration for taint `key=production:NoSchedule`\n4. Set priority class to `high-priority`\n\nFirst create a PriorityClass named `high-priority` with value 1000000.\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["node-selectors", "tolerations", "priority-classes"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q18_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "PriorityClass is created correctly",
+                    "verificationScriptFile": "q18_s2_validate_priority_class.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Pod has correct node selector",
+                    "verificationScriptFile": "q18_s3_validate_node_selector.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pod has correct toleration",
+                    "verificationScriptFile": "q18_s4_validate_toleration.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Pod uses correct priority class",
+                    "verificationScriptFile": "q18_s5_validate_priority.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "19",
+            "namespace": "pod-networking",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `network-pod` in the `pod-networking` namespace with the following specifications:\n\n1. Use image `nginx`\n2. Set hostname to `custom-hostname`\n3. Set subdomain to `custom-subdomain`\n4. Configure DNS policy to `ClusterFirstWithHostNet`\n5. Enable host networking\n\nAlso create a headless service named `network-service` to expose the pod.\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["pod-networking", "dns-policy", "host-networking"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q19_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "Pod is created with correct name and image",
+                    "verificationScriptFile": "q19_s2_validate_pod.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "3",
+                    "description": "Pod has correct hostname and subdomain",
+                    "verificationScriptFile": "q19_s3_validate_hostname.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pod has correct DNS policy and host networking",
+                    "verificationScriptFile": "q19_s4_validate_networking.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Headless service is configured correctly",
+                    "verificationScriptFile": "q19_s5_validate_service.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        },
+        {
+            "id": "20",
+            "namespace": "pod-configuration",
+            "machineHostname": "ckad9988",
+            "question": "Create a Pod named `config-pod` in the `pod-configuration` namespace with the following specifications:\n\n1. Use image `nginx`\n2. Add environment variables:\n   - `APP_ENV=production`\n   - `DEBUG=false`\n3. Add environment variables from ConfigMap `app-config` with keys:\n   - `DB_HOST`\n   - `DB_PORT`\n4. Mount ConfigMap `app-config` as a volume at `/etc/app-config`\n5. Add environment variables from Secret `app-secret` with keys:\n   - `API_KEY`\n   - `API_SECRET`\n\nFirst create the ConfigMap and Secret with the specified data.\n\nEnsure the namespace exists before creating the resources.",
+            "concepts": ["environment-variables", "configmaps", "secrets", "volumes"],
+            "verification": [
+                {
+                    "id": "1",
+                    "description": "Namespace is created",
+                    "verificationScriptFile": "q20_s1_validate_namespace.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
+                },
+                {
+                    "id": "2",
+                    "description": "ConfigMap is created correctly",
+                    "verificationScriptFile": "q20_s2_validate_configmap.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Secret is created correctly",
+                    "verificationScriptFile": "q20_s3_validate_secret.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "4",
+                    "description": "Pod has correct environment variables",
+                    "verificationScriptFile": "q20_s4_validate_env_vars.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                },
+                {
+                    "id": "5",
+                    "description": "Pod mounts ConfigMap correctly",
+                    "verificationScriptFile": "q20_s5_validate_configmap_mount.sh",
+                    "expectedOutput": "0",
+                    "weightage": 2
+                }
+            ]
+        }
+    ]
+} 

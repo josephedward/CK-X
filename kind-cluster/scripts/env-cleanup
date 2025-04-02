@@ -1,0 +1,45 @@
+# Cleanup script to remove the Kind cluster
+
+CLUSTER_NAME=${1:-cluster}
+
+#check if CLUSTER_NAME is set
+if [ -z "$CLUSTER_NAME" ]; then
+    echo "CLUSTER_NAME is not set"
+    exit 1
+fi
+
+# Check if the Kind cluster is running
+if kind get clusters | grep -q "$CLUSTER_NAME"; then
+    # Delete the Kind cluster
+    kind delete cluster --name "$CLUSTER_NAME"
+
+    # Wait until the cluster is fully deleted
+    while kind get clusters -q | grep -q "$CLUSTER_NAME"; do
+        sleep 1
+    done
+
+    echo "Kind cluster $CLUSTER_NAME has been deleted."
+else
+    echo "Kind cluster $CLUSTER_NAME is not running."
+    exit 0
+fi
+
+# Perform a full Docker system prune (removes all unused data) but do not remove kindest/node images
+docker system prune -a -f --filter "label=org.opencontainers.image.name=kindest/node"
+docker volume prune -f 
+echo "Docker system cleaned up."
+
+#delete kind-config.yaml if present
+if [ -f "/tmp/kind-config.yaml" ]; then
+    rm -f /tmp/kind-config.yaml
+    echo "Kind-config.yaml file deleted."
+fi
+
+#delete kubeconfig file if present in the /root/.kube/kubeconfig
+if [ -f "/root/.kube/kubeconfig" ]; then
+    rm -f /root/.kube/kubeconfig
+    echo "Kubeconfig file deleted."
+fi
+
+echo "Cleanup completed."
+exit 0
