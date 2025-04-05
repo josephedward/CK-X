@@ -10,16 +10,26 @@ A powerful Kubernetes certification practice environment that provides a realist
 - **Docker-based deployment** for easy setup and consistent environment
 - **Timed exam mode** with real exam-like conditions and countdown timer
 
+
+## Demo Video
+
+Watch our live demo video showcasing the CK-X Simulator in action:
+
+[![CK-X Simulator Demo](https://img.youtube.com/vi/EQVGhF8x7R4/0.jpg)](https://www.youtube.com/watch?v=EQVGhF8x7R4&ab_channel=NishanB)
+
+Click the image above or [this link](https://www.youtube.com/watch?v=EQVGhF8x7R4&ab_channel=NishanB) to see the full demo.
+
+
 ## Installation
 
-#### Linux & macOS
+#### Linux & macOS (tested on m1)
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nishanb/ck-x/main/scripts/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nishanb/ck-x/master/scripts/install.sh)
 ```
 
-#### Windows
+#### Windows ( Currently not supported. Windows installation is unstable and may break during setup. )
 ```powershell
-irm https://raw.githubusercontent.com/nishanb/ck-x/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/nishanb/ck-x/master/scripts/install.ps1 | iex
 ```
 
 ### Manual Installation
@@ -48,7 +58,7 @@ If you find CK-X Simulator helpful, consider [buying me a coffee](https://buymea
 
 ## Disclaimer
 
-CK-X is an independent tool, not affiliated with CNCF, Linux Foundation, or PSI. We do not guarantee exam success. Please read our [Privacy Policy](PRIVACY_POLICY.md) and [Terms of Service](TERMS_OF_SERVICE.md) for more details about data collection, usage, and limitations.
+CK-X is an independent tool, not affiliated with CNCF, Linux Foundation, or PSI. We do not guarantee exam success. Please read our [Privacy Policy](docs/PRIVACY_POLICY.md) and [Terms of Service](docs/TERMS_OF_SERVICE.md) for more details about data collection, usage, and limitations.
 
 ## Acknowledgments
 

@@ -55,7 +55,7 @@ async function getClient() {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function persistExamInfo(examId, examInfo, ttl = 3600) {
+async function persistExamInfo(examId, examInfo, ttl = 36000) {
   try {
     const client = await getClient();
     const key = `${KEYS.EXAM_INFO}${examId}`;
@@ -76,7 +76,7 @@ async function persistExamInfo(examId, examInfo, ttl = 3600) {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function persistExamStatus(examId, status, ttl = 3600) {
+async function persistExamStatus(examId, status, ttl = 36000) {
   try {
     const client = await getClient();
     const key = `${KEYS.EXAM_STATUS}${examId}`;
@@ -96,7 +96,7 @@ async function persistExamStatus(examId, status, ttl = 3600) {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function persistExamResult(examId, result, ttl = 3600) {
+async function persistExamResult(examId, result, ttl = 36000) {
   try {
     const client = await getClient();
     const key = `${KEYS.EXAM_RESULT}${examId}`;
@@ -117,7 +117,7 @@ async function persistExamResult(examId, result, ttl = 3600) {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function setCurrentExamId(examId, ttl = 3600) {
+async function setCurrentExamId(examId, ttl = 36000) {
   try {
     const client = await getClient();
     const result = await client.setEx(KEYS.CURRENT_EXAM_ID, ttl, examId);
@@ -200,8 +200,8 @@ async function getCurrentExamId() {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function updateExamInfo(examId, examInfo, ttl = 3600) {
-  return persistExamInfo(examId, examInfo, ttl);
+async function updateExamInfo(examId, examInfo) {
+  return persistExamInfo(examId, examInfo);
 }
 
 /**
@@ -211,8 +211,8 @@ async function updateExamInfo(examId, examInfo, ttl = 3600) {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function updateExamStatus(examId, status, ttl = 3600) {
-  return persistExamStatus(examId, status, ttl);
+async function updateExamStatus(examId, status) {
+  return persistExamStatus(examId, status);
 }
 
 /**
@@ -221,8 +221,8 @@ async function updateExamStatus(examId, status, ttl = 3600) {
  * @param {number} [ttl=3600] - Time to live in seconds (default: 1 hour)
  * @returns {Promise<string>} - Returns 'OK' if successful
  */
-async function updateCurrentExamId(examId, ttl = 3600) {
-  return setCurrentExamId(examId, ttl);
+async function updateCurrentExamId(examId) {
+  return setCurrentExamId(examId);
 }
 
 /**

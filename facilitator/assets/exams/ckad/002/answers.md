@@ -1,6 +1,6 @@
 # CKAD-002 Lab Answers
 
-This document contains solutions for all questions in the CKAD-002 lab, which is based on the CKAD-exercises repository by dgkanatsios.
+This document contains solutions for all questions in the CKAD-002 lab
 
 ## Question 1: Core Concepts
 
@@ -509,203 +509,457 @@ spec:
 EOF
 ```
 
-## Question 19: Pod Networking
+## Question 11: Security Context
 
-### Task:
-Create a pod with specific networking configurations:
-
-1. Create a namespace called `pod-networking`
-2. Create a pod named `network-pod` in the `pod-networking` namespace with the image `nginx:alpine`
-3. Configure the pod with the following:
-   - Hostname set to `custom-host`
-   - Subdomain set to `example`
-   - DNS Policy set to `ClusterFirstWithHostNet`
-   - Add custom DNS configuration:
-     - Nameservers: `8.8.8.8` and `8.8.4.4`
-     - Searches: `example.com`
-
-### Solution:
-
-First, create the namespace:
+Create a Pod with security configurations:
 
 ```bash
-kubectl create namespace pod-networking
-```
+# Create namespace
+kubectl create namespace security
 
-Then, create a YAML file for the pod with the required networking configurations:
-
-```yaml
+# Create secure pod
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: security
+---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: network-pod
-  namespace: pod-networking
+  name: secure-app
+  namespace: security
 spec:
-  hostname: custom-host
-  subdomain: example
-  dnsPolicy: ClusterFirstWithHostNet
-  dnsConfig:
-    nameservers:
-    - 8.8.8.8
-    - 8.8.4.4
-    searches:
-    - example.com
+  securityContext:
+    runAsUser: 1000
+    runAsNonRoot: true
   containers:
   - name: nginx
     image: nginx:alpine
+    securityContext:
+      capabilities:
+        drop: ["ALL"]
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+EOF
 ```
 
-Apply the YAML file:
+## Question 12: Docker Basics
+
+Create a simple Docker image and run it:
 
 ```bash
-kubectl apply -f network-pod.yaml
+# Create the Dockerfile
+cat > /tmp/Dockerfile << 'EOF'
+FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/
+EXPOSE 80
+EOF
+
+# Create the HTML file
+cat > /tmp/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Hello from CKAD Docker Question!</h1>
+</body>
+</html>
+EOF
+
+# Build the Docker image
+docker build -t my-nginx:v1 -f /tmp/Dockerfile /tmp
+
+# Run the container
+docker run -d --name my-web -p 8080:80 my-nginx:v1
+
+# Verify the container is running
+docker ps | grep my-web
 ```
 
-Verify the pod is running:
+## Question 13: Jobs
+
+Create a Job with specific configurations:
 
 ```bash
-kubectl get pod -n pod-networking
+# Create namespace
+kubectl create namespace jobs
+
+# Create Job
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jobs
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor
+  namespace: jobs
+spec:
+  backoffLimit: 4
+  activeDeadlineSeconds: 30
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: busybox
+        command: ['sh', '-c', 'for i in $(seq 1 5); do echo Processing item $i; sleep 2; done']
+      restartPolicy: Never
+EOF
 ```
 
-## Question 20: Network Policies
+## Question 14: Init Containers
 
-### Task:
-Create network policies to control traffic between pods:
-
-1. Create a namespace called `network-policy`
-2. Create three pods in the namespace:
-   - A pod named `web` with image `nginx` and label `app=web`
-   - A pod named `db` with image `postgres` and label `app=db`
-   - A pod named `cache` with image `redis` and label `app=cache`
-3. Create a network policy named `db-policy` that allows only the `web` pod to access the `db` pod on port 5432
-4. Create a network policy named `cache-policy` that allows only the `web` pod to access the `cache` pod on port 6379
-5. Create a default deny policy named `default-deny` that blocks all other traffic within the namespace
-
-### Solution:
-
-First, create the namespace:
+Create a Pod with init container and service:
 
 ```bash
-kubectl create namespace network-policy
-```
+# Create namespace
+kubectl create namespace init-containers
 
-Create the three pods:
-
-```yaml
+# Create Pod with init container and Service
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: init-containers
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice
+  namespace: init-containers
+spec:
+  selector:
+    app: myservice
+  ports:
+  - port: 80
+---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: web
-  namespace: network-policy
-  labels:
-    app: web
+  name: app-with-init
+  namespace: init-containers
+spec:
+  containers:
+  - name: main-container
+    image: nginx
+    volumeMounts:
+    - name: log-volume
+      mountPath: /shared
+  initContainers:
+  - name: sidecar-container
+    image: busybox
+    command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done']
+    volumeMounts:
+    - name: log-volume
+      mountPath: /shared
+  volumes:
+  - name: log-volume
+    emptyDir: {}
+EOF
+```
+
+## Question 15 - Helm Basics
+
+The task is to perform basic Helm operations including creating a namespace, adding a repository, installing a chart, and saving release notes.
+
+```bash
+# Step 1: Create the namespace
+kubectl create namespace helm-basics
+
+# Step 2: Add the Bitnami repository
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+# Step 3: Install the nginx chart
+helm install nginx-release bitnami/nginx --namespace helm-basics
+
+# Step 4: Save the release notes to a file
+helm get notes nginx-release --namespace helm-basics > /tmp/release-notes.txt
+```
+
+These commands:
+1. Create a namespace called `helm-basics`
+2. Add the Bitnami Helm chart repository and update it to get the latest charts
+3. Install the nginx chart from Bitnami in the helm-basics namespace with the release name "nginx-release"
+4. Save the release notes to /tmp/release-notes.txt using the `helm get notes` command
+
+## Question 16: Health Checks
+
+Create a Pod with multiple health probes:
+
+```bash
+# Create namespace
+kubectl create namespace health-checks
+
+# Create Pod with startup, liveness, and readiness probes
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: health-checks
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: health-check-pod
+  namespace: health-checks
 spec:
   containers:
   - name: nginx
     image: nginx
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 10
+      periodSeconds: 3
+      failureThreshold: 3
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 15
+      periodSeconds: 5
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 3
+      failureThreshold: 3
+EOF
+```
+
+## Question 17: Pod Lifecycle
+
+Create a Pod with lifecycle hooks:
+
+```bash
+# Create namespace
+kubectl create namespace pod-lifecycle
+
+# Create Pod with lifecycle hooks
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pod-lifecycle
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: db
-  namespace: network-policy
-  labels:
-    app: db
+  name: lifecycle-pod
+  namespace: pod-lifecycle
 spec:
   containers:
-  - name: postgres
-    image: postgres
+  - name: nginx
+    image: nginx
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "echo 'Welcome to the pod!' > /usr/share/nginx/html/welcome.txt"]
+      preStop:
+        exec:
+          command: ["/bin/sh", "-c", "sleep 10"]
+  terminationGracePeriodSeconds: 30
+EOF
+```
+
+## Question 18: Custom Resource Definitions
+
+Create a CRD and a custom resource:
+
+```bash
+# Create namespace
+kubectl create namespace crd-demo
+
+# Create the Custom Resource Definition (CRD)
+cat <<EOF | kubectl apply -f -
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: applications.training.ckad.io
+spec:
+  group: training.ckad.io
+  names:
+    kind: Application
+    plural: applications
+    singular: application
+    shortNames:
+    - app
+  scope: Namespaced
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required: ["image", "replicas"]
+            properties:
+              image:
+                type: string
+              replicas:
+                type: integer
+                minimum: 1
+EOF
+
+# Create the Custom Resource
+cat <<EOF | kubectl apply -f -
+apiVersion: training.ckad.io/v1
+kind: Application
+metadata:
+  name: my-app
+  namespace: crd-demo
+spec:
+  image: nginx:1.19.0
+  replicas: 3
+EOF
+
+# Verify the resources
+kubectl get crd applications.training.ckad.io
+kubectl get application -n crd-demo
+```
+
+## Question 19: Custom Column Output
+
+Use kubectl custom columns to extract pod information:
+
+```bash
+# Create namespace (should already be set up by the test environment)
+kubectl create namespace custom-columns-demo
+
+# First, let's see what pods we have to work with
+kubectl get pods -n custom-columns-demo
+
+# Create the basic custom column output showing pods from all namespaces
+# Format: POD NAME, NAMESPACE, and PRIMARY CONTAINER IMAGE
+kubectl get pods -A -o custom-columns="POD:.metadata.name,NAMESPACE:.metadata.namespace,IMAGE:.spec.containers[0].image" > /tmp/pod-images.txt
+
+# Verify the basic output
+cat /tmp/pod-images.txt
+
+# For the second requirement, we need to handle multi-container pods
+# Option 1: Using jsonpath to get comma-separated list of all container images
+kubectl get pods -A -o jsonpath="{range .items[*]}{.metadata.name},{.metadata.namespace},{range .spec.containers[*]}{.image}{','}{end}{'\n'}{end}" > /tmp/all-container-images.txt
+
+# Option 2: Using a more advanced approach with a script
+cat <<'EOF' > /tmp/get-pod-images.sh
+#!/bin/bash
+echo "POD,NAMESPACE,IMAGES"
+kubectl get pods -A -o json | jq -r '.items[] | .metadata.name + "," + .metadata.namespace + "," + (.spec.containers | map(.image) | join(","))'
+EOF
+
+chmod +x /tmp/get-pod-images.sh
+/tmp/get-pod-images.sh > /tmp/all-container-images.txt
+
+# Verify the multi-container output
+cat /tmp/all-container-images.txt
+
+# Check that our outputs contain the expected data
+grep "multi-container-pod" /tmp/all-container-images.txt
+```
+
+This solution creates two output files:
+1. `/tmp/pod-images.txt` - Shows all pods with their names, namespaces, and primary container images
+2. `/tmp/all-container-images.txt` - Shows all pods with all container images, properly handling multi-container pods
+
+## Question 20: Pod Configuration
+
+Create a Pod that uses ConfigMaps and Secrets for configuration:
+
+```bash
+# Create namespace
+kubectl create namespace pod-configuration
+
+# Create ConfigMap with database connection settings
+kubectl create configmap app-config -n pod-configuration \
+  --from-literal=DB_HOST=db.example.com \
+  --from-literal=DB_PORT=5432
+
+# Verify the ConfigMap was created correctly
+kubectl get configmap app-config -n pod-configuration -o yaml
+
+# Create Secret with API credentials
+kubectl create secret generic app-secret -n pod-configuration \
+  --from-literal=API_KEY=my-api-key \
+  --from-literal=API_SECRET=my-api-secret
+
+# Verify the Secret was created (note values will be base64 encoded)
+kubectl get secret app-secret -n pod-configuration -o yaml
+
+# Create Pod with environment variables and volume mounts
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-pod
+  namespace: pod-configuration
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    # Direct environment variables
     env:
-    - name: POSTGRES_PASSWORD
-      value: "password"
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: cache
-  namespace: network-policy
-  labels:
-    app: cache
-spec:
-  containers:
-  - name: redis
-    image: redis
+    - name: APP_ENV
+      value: production
+    - name: DEBUG
+      value: "false"
+    # Environment variables from ConfigMap
+    - name: DB_HOST
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: DB_HOST
+    - name: DB_PORT
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: DB_PORT
+    # Environment variables from Secret
+    - name: API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: API_KEY
+    - name: API_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: API_SECRET
+    # Mount ConfigMap as a volume
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/app-config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config
+EOF
+
+# Verify the Pod has been created
+kubectl get pod config-pod -n pod-configuration
+
+# Verify environment variables within the Pod
+kubectl exec config-pod -n pod-configuration -- env | grep -E 'APP_ENV|DEBUG|DB_|API_'
+
+# Verify the ConfigMap is mounted as a volume
+kubectl exec config-pod -n pod-configuration -- ls -la /etc/app-config
+kubectl exec config-pod -n pod-configuration -- cat /etc/app-config/DB_HOST
 ```
 
-Save this as `pods.yaml` and apply it:
-
-```bash
-kubectl apply -f pods.yaml
-```
-
-Create the DB network policy:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: db-policy
-  namespace: network-policy
-spec:
-  podSelector:
-    matchLabels:
-      app: db
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: web
-    ports:
-    - port: 5432
-```
-
-Create the cache network policy:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: cache-policy
-  namespace: network-policy
-spec:
-  podSelector:
-    matchLabels:
-      app: cache
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: web
-    ports:
-    - port: 6379
-```
-
-Create the default deny policy:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny
-  namespace: network-policy
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-```
-
-Save these as separate files or in one file with `---` separators, and apply them:
-
-```bash
-kubectl apply -f network-policies.yaml
-```
-
-Verify the network policies are applied:
-
-```bash
-kubectl get networkpolicy -n network-policy
-``` 
+This solution demonstrates:
+1. Creating a ConfigMap with database connection settings
+2. Creating a Secret with API credentials
+3. Configuring a Pod with:
+   - Direct environment variables (APP_ENV, DEBUG)
+   - Environment variables from ConfigMap (DB_HOST, DB_PORT)
+   - Environment variables from Secret (API_KEY, API_SECRET)
+   - Mounting the ConfigMap as a volume at /etc/app-config
+4. Verification commands to ensure everything is working correctly 

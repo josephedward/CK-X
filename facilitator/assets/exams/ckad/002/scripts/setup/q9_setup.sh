@@ -11,7 +11,7 @@ metadata:
   name: broken-deployment
   namespace: troubleshooting
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nginx

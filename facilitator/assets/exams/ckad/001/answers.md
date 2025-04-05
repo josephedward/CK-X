@@ -90,7 +90,7 @@ kubectl logs <pod-name> -n troubleshooting
 Potential fixes:
 1. If the image is incorrect: 
    ```bash
-   kubectl set image deployment/broken-app container-name=correct-image:tag -n troubleshooting
+   kubectl set image deployments -n troubleshooting broken-app app=nginx:latest
    ```
 2. If environment variables are missing:
    ```bash
@@ -101,89 +101,109 @@ Potential fixes:
    kubectl patch deployment broken-app -n troubleshooting -p '{"spec":{"template":{"spec":{"containers":[{"name":"container-name","resources":{"limits":{"memory":"512Mi"}}}]}}}}'
    ```
 
-## Question 6: The kubelet on node 'worker-1' is not functioning properly. Diagnose and fix the issue
+## Question 6: Create a multi-container pod with sidecar logging pattern
 
-Troubleshooting steps:
-```bash
-# Check node status
-kubectl get nodes
-
-# Describe the node for more information
-kubectl describe node worker-1
-
-# SSH into the worker node
-ssh worker-1
-
-# Check kubelet status
-systemctl status kubelet
-
-# Check kubelet logs
-journalctl -u kubelet -n 100
-
-# Restart kubelet if needed
-systemctl restart kubelet
-
-# Check kubelet configuration
-cat /var/lib/kubelet/config.yaml
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-pod
+  namespace: troubleshooting
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log
+  - name: sidecar
+    image: busybox
+    command: ["sh", "-c", "while true; do date >> /var/log/date.log; sleep 10; done"]
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log
+  volumes:
+  - name: log-volume
+    emptyDir: {}
 ```
 
-Common kubelet issues:
-1. Service not running: `systemctl start kubelet`
-2. Configuration errors: Edit `/var/lib/kubelet/config.yaml`
-3. Certificate issues: Renew certificates if needed
-4. Disk space issues: `df -h` to check and clean up if needed
+Save this as `sidecar-pod.yaml` and apply:
+
+```bash
+kubectl apply -f sidecar-pod.yaml
+```
+
+You can verify the pod is working correctly:
+
+```bash
+# Check that both containers are running in the pod
+kubectl get pod sidecar-pod -n troubleshooting
+
+# Verify the shared volume is mounted and the log file is being written
+kubectl exec -it sidecar-pod -n troubleshooting -c nginx -- cat /var/log/date.log
+
+# Check events related to the pod
+kubectl describe pod sidecar-pod -n troubleshooting
+```
 
 ## Question 7: Service 'web-service' in namespace 'troubleshooting' is not routing traffic to pods properly. Identify and fix the issue
 
 Troubleshooting steps:
 ```bash
-# Check the service
+# Check the service configuration
 kubectl get svc web-service -n troubleshooting
 
-# Describe the service to check selector labels
+# Examine the service details to identify selector and port configuration issues
 kubectl describe svc web-service -n troubleshooting
 
-# Check if there are pods matching the selector
-kubectl get pods -l <service-selector-label> -n troubleshooting
 ```
 
-Common fixes:
-1. Fix service selector to match pod labels:
-   ```bash
-   kubectl edit svc web-service -n troubleshooting
-   ```
-2. Fix pod labels to match service selector:
-   ```bash
-   kubectl label pods <pod-name> key=value -n troubleshooting
-   ```
-3. Fix service port mapping:
-   ```bash
-   kubectl edit svc web-service -n troubleshooting
-   ```
+Solution approach based on typical issues:
 
-## Question 8: Pod 'logging-pod' in namespace 'troubleshooting' is experiencing high CPU usage. Identify the container causing the issue and take appropriate action to limit its CPU usage
-
-```bash
-# Check current resource usage
-kubectl top pod logging-pod -n troubleshooting
-kubectl top pod logging-pod -n troubleshooting --containers
-
-# Add CPU limits to the container
-kubectl patch pod logging-pod -n troubleshooting -p '{"spec":{"containers":[{"name":"<container-name>","resources":{"limits":{"cpu":"200m"}}}]}}'
-```
-
-Or edit the deployment if the pod is managed by one:
-```bash
-kubectl edit deployment <deployment-name> -n troubleshooting
-```
-
-Add the following to the container spec:
+1. If the service selector doesn't match any pod labels, fix the service selector:
 ```yaml
-resources:
-  limits:
-    cpu: 200m
-  requests:
-    cpu: 100m
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: troubleshooting
+spec:
+  selector:
+    app: web-app  
+  ports:
+  - port: 80
+    targetPort: 80
+```
+
+2. Save as `fixed-service.yaml` and apply:
+```bash
+kubectl apply -f fixed-service.yaml
+```
+
+## Question 8: Pod 'logging-pod' in namespace 'troubleshooting' is consuming excessive CPU resources. Set appropriate CPU and memory limits
+
+Solution:
+1. After identifying which container is causing high CPU usage, edit the pod to add resource limits:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: logging-pod
+  namespace: troubleshooting
+spec:
+  containers:
+  - name: <container-name>
+    # ... existing container configuration ...
+    resources:
+      limits:
+        cpu: 100m
+        memory: 50Mi
+```
+
+Edit the pod to add resource limits and will be saved to tmp/<file.yaml>
+```
+kubectl replace -f tmp/<file.yaml> --force
 ```
 
 ## Question 9: Create a ConfigMap named 'app-config' in namespace 'workloads' containing the following key-value pairs: APP_ENV=production, LOG_LEVEL=info. Then create a Pod named 'config-pod' using 'nginx' image that mounts these configurations as environment variables
@@ -215,6 +235,13 @@ spec:
         configMapKeyRef:
           name: app-config
           key: LOG_LEVEL
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
 ```
 
 Save as `config-pod.yaml` and apply:
@@ -239,7 +266,7 @@ metadata:
 spec:
   containers:
   - name: mysql
-    image: mysql:5.7
+    image: mysql:latest
     env:
     - name: DB_USER
       valueFrom:
@@ -256,6 +283,7 @@ spec:
         secretKeyRef:
           name: db-credentials
           key: password
+  restartPolicy: Always
 ```
 
 Save as `secure-pod.yaml` and apply:
@@ -263,39 +291,41 @@ Save as `secure-pod.yaml` and apply:
 kubectl apply -f secure-pod.yaml
 ```
 
-## Question 11: Create a Horizontal Pod Autoscaler for the deployment 'web-app' in namespace 'workloads' that scales between 2 and 6 replicas based on 70% CPU utilization
+## Question 11: Create a CronJob named 'log-cleaner' in namespace 'workloads' that runs hourly to clean up log files
 
-```bash
-# Create the HPA
-kubectl autoscale deployment web-app -n workloads --min=2 --max=6 --cpu-percent=70
-```
-
-Or using YAML:
 ```yaml
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: batch/v1
+kind: CronJob
 metadata:
-  name: web-app
+  name: log-cleaner
   namespace: workloads
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: web-app
-  minReplicas: 2
-  maxReplicas: 6
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+  schedule: "0 * * * *"  # Run every hour at minute 0
+  concurrencyPolicy: Forbid  # Skip new job if previous is running
+  successfulJobsHistoryLimit: 3  # Keep 3 successful job completions
+  failedJobsHistoryLimit: 1  # Keep 1 failed job
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: log-cleaner
+            image: busybox
+            command: ["/bin/sh", "-c"]
+            args:
+            - find /var/log -type f -name "*.log" -mtime +7 -delete
+          restartPolicy: OnFailure
 ```
 
-Save as `hpa.yaml` and apply:
+Save this as `log-cleaner-cronjob.yaml` and apply:
+
 ```bash
-kubectl apply -f hpa.yaml
+kubectl apply -f log-cleaner-cronjob.yaml
+```
+
+You can check the cron job configuration:
+```bash
+kubectl get cronjob log-cleaner -n workloads -o yaml
 ```
 
 ## Question 12: Create a Pod named 'health-pod' in namespace 'workloads' using 'nginx' image with a liveness probe that checks the path /healthz on port 80 every 15 seconds, and a readiness probe that checks port 80 every 10 seconds
@@ -376,21 +406,30 @@ kubectl apply -f cluster-role.yaml
 kubectl apply -f cluster-role-binding.yaml
 ```
 
-## Question 14: Install Helm and use it to deploy the Prometheus monitoring stack in the 'monitoring' namespace
+## Question 14: Deploy the Bitnami Nginx chart in the 'web' namespace using Helm
 
 ```bash
-# Install Helm
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+# Create the namespace if it doesn't exist
+kubectl create namespace web
 
-# Create the namespace
-kubectl create namespace monitoring
+# Add the Bitnami charts repository
+helm repo add bitnami https://charts.bitnami.com/bitnami
 
-# Add Prometheus repo
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# Update Helm repositories
 helm repo update
 
-# Install Prometheus stack
-helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
+# Install Bitnami's Nginx chart with 2 replicas
+helm install nginx bitnami/nginx --namespace web --set replicaCount=2
+
+# Verify the deployment
+kubectl get pods -n web
+kubectl get svc -n web
+```
+
+You can inspect the installation and configuration:
+```bash
+helm list -n web
+kubectl get deployment -n web
 ```
 
 ## Question 15: Create a CRD (CustomResourceDefinition) for a new resource type 'Backup' in API group 'data.example.com' with version 'v1alpha1' that includes fields 'spec.source' and 'spec.destination'
@@ -460,10 +499,6 @@ kubectl apply -f network-policy.yaml
 
 ## Question 17: Create a ClusterIP service named 'internal-app' in namespace 'networking' that routes traffic to pods with label 'app=backend' on port 8080, exposing the service on port 80
 
-```bash
-kubectl create service clusterip internal-app --tcp=80:8080 -n networking --selector=app=backend
-```
-
 Or using YAML:
 ```yaml
 apiVersion: v1
@@ -486,13 +521,8 @@ Save as `internal-service.yaml` and apply:
 kubectl apply -f internal-service.yaml
 ```
 
-## Question 18: Create a LoadBalancer service named 'public-web' in namespace 'networking' that exposes port 80 for the deployment 'web-frontend'
+## Question 18: Create a NodePort service named public-web in namespace networking that will expose the web-frontend deployment to external users.
 
-```bash
-kubectl expose deployment web-frontend --type=LoadBalancer --port=80 --name=public-web -n networking
-```
-
-Or using YAML:
 ```yaml
 apiVersion: v1
 kind: Service
@@ -500,13 +530,16 @@ metadata:
   name: public-web
   namespace: networking
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
-    app: web-frontend
+    app: web-frontend 
   ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
+    - name: http
+      protocol: TCP
+      port: 80           
+      targetPort: 8080  
+      nodePort: 30080    
+
 ```
 
 Save as `loadbalancer-service.yaml` and apply:
@@ -541,24 +574,65 @@ Save as `ingress.yaml` and apply:
 kubectl apply -f ingress.yaml
 ```
 
-## Question 20: Configure CoreDNS to add a custom entry that resolves 'database.local' to the IP address 10.96.0.20
+## Question 20: Create a simple Kubernetes Job named 'hello-job' that executes a command and completes
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-job
+  namespace: networking
+spec:
+  activeDeadlineSeconds: 30
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command: ["sh", "-c", "echo 'Hello from Kubernetes job!'"]
+      restartPolicy: Never
+  backoffLimit: 0
+```
+
+Save this as `hello-job.yaml` and apply:
 
 ```bash
-# Edit the CoreDNS ConfigMap
-kubectl edit configmap coredns -n kube-system
+kubectl apply -f hello-job.yaml
 ```
 
-Add the following to the Corefile data:
-```
-hosts {
-    10.96.0.20 database.local
-    fallthrough
-}
-```
-
-Restart CoreDNS pods:
+You can check the job's status and output:
 ```bash
-kubectl delete pod -l k8s-app=kube-dns -n kube-system
+# Check job status
+kubectl get jobs -n networking
+
+# View the pod created by the job
+kubectl get pods -n networking -l job-name=hello-job
+
+# Check the logs to see the output message
+kubectl logs -n networking -l job-name=hello-job
 ```
 
-Or create a custom ConfigMap with hosts entries and mount it in the CoreDNS deployment.
+## Question 21: Work with the Open Container Initiative (OCI) format
+
+```bash
+# Pull the image
+docker pull nginx:latest
+
+# Save the image to a tarball
+docker save nginx:latest -o /tmp/nginx-image.tar
+
+# Create the OCI directory
+mkdir -p /root/oci-images
+
+# Extract the tarball to the OCI directory
+tar -xf /tmp/nginx-image.tar -C /root/oci-images
+
+# Clean up the tarball
+rm /tmp/nginx-image.tar
+```
+
+Check the result:
+```bash
+ls -la /root/oci-images
+cat /root/oci-images/index.json  # Verify it's in OCI format
+```

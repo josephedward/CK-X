@@ -2,7 +2,7 @@
 # Validate that the Kubernetes Job 'backup-job' in namespace 'networking' has the correct configuration
 
 NAMESPACE="networking"
-JOB_NAME="backup-job"
+JOB_NAME="hello-job"
 EXPECTED_IMAGE="busybox"
 EXPECTED_RESTART_POLICY="Never"
 EXPECTED_BACKOFF_LIMIT=0
@@ -11,6 +11,15 @@ EXPECTED_BACKOFF_LIMIT=0
 kubectl get job $JOB_NAME -n $NAMESPACE > /dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo "❌ Job '$JOB_NAME' not found in namespace '$NAMESPACE'"
+  exit 1
+fi
+
+# Check for activeDeadlineSeconds set to 30
+DEADLINE=$(kubectl get job $JOB_NAME -n $NAMESPACE -o jsonpath='{.spec.activeDeadlineSeconds}')
+if [[ "$DEADLINE" == "30" ]]; then
+  echo "✅ Job has correct activeDeadlineSeconds value: 30"
+else
+  echo "❌ Job has incorrect activeDeadlineSeconds value: ${DEADLINE:-not set}"
   exit 1
 fi
 

@@ -276,7 +276,13 @@ spec:
 
 Create NetworkPolicy and test pods:
 
+```bash
+API_SERVER_IP=$(kubectl get svc kubernetes -n default -o jsonpath='{.spec.clusterIP}')
+```
+
 ```yaml
+cat <<EOF > api-server-policy.yaml
+# 1. Deny access to API server for all pods
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -291,16 +297,31 @@ spec:
     - ipBlock:
         cidr: 0.0.0.0/0
         except:
-        - 10.96.0.1/32  # Kubernetes API server IP
-    namespaceSelector: {}
-    podSelector: {}
+        - ${API_SERVER_IP}/32
+
+---
+# 2. Allow access to API server for pods with label role=admin
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-admin-api-egress
+  namespace: api-restrict
+spec:
+  podSelector:
+    matchLabels:
+      role: admin
+  policyTypes:
+  - Egress
+  egress:
   - to:
     - ipBlock:
-        cidr: 10.96.0.1/32  # API server IP
-    podSelector:
-      matchLabels:
-        role: admin
+        cidr: ${API_SERVER_IP}/32
+    ports:
+    - protocol: TCP
+      port: 443
+
 ---
+# admin-pod (can access API server)
 apiVersion: v1
 kind: Pod
 metadata:
@@ -313,7 +334,9 @@ spec:
   - name: busybox
     image: busybox
     command: ["sleep", "3600"]
+
 ---
+# restricted-pod (blocked from API server)
 apiVersion: v1
 kind: Pod
 metadata:
@@ -326,6 +349,11 @@ spec:
   - name: busybox
     image: busybox
     command: ["sleep", "3600"]
+EOF
+```
+
+```bash
+kubectl apply -f api-server-policy.yaml
 ```
 
 ## Question 9: Secure Container Configuration

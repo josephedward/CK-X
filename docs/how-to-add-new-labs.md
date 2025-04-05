@@ -12,6 +12,14 @@ Each lab in CK-X Simulator consists of:
 4. **Setup and Verification Scripts** to prepare environments and validate student solutions
 5. **Answers File** with solution documentation
 
+# Considerations Before Creating a Lab
+1. The cluster will consist of one control-plane node and multiple worker nodes.
+2. SSH access to the nodes is not provided, which may restrict the development of labs that require access to Kubernetes internals or node internals.
+3. All setup scripts will be executed simultaneously, so ensure that the questions are independent of each other.
+4. Limit the setup to a maximum of two worker nodes to reduce system resource consumption during the exam.
+5. When creating files in the cluster, use the /tmp/exam directory. This directory will be created during setup and removed during cleanup.
+
+
 ## Step 1: Create Lab Directory Structure
 
 First, create a directory structure for your lab using this pattern:
@@ -62,7 +70,7 @@ Parameters:
 - `lab`: Unique identifier for the lab (should match directory structure)
 - `workerNodes`: Number of worker nodes required for this lab
 - `answers`: Path to answers markdown file
-- `questions`: Path to assessment JSON file
+- `questions`: sessment JSON filename
 - `totalMarks`: Maximum possible score
 - `lowScore`, `mediumScore`, `highScore`: Score thresholds for result categorization
 

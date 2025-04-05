@@ -23,9 +23,13 @@ const logger = winston.createLogger({
           ({ level, message, timestamp, ...metadata }) => {
             let msg = `${timestamp} [${level}]: ${message}`;
             
-            // Add metadata if exists
-            if (Object.keys(metadata).length > 0 && metadata.service) {
-              msg += JSON.stringify(metadata);
+            try {
+              // Add metadata if exists
+              if (Object.keys(metadata).length > 0 && metadata.service) {
+                msg += JSON.stringify(metadata);
+              }
+            } catch (error) {
+              console.error('Error in logger:', error);
             }
             
             return msg;

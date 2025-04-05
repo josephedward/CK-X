@@ -78,7 +78,7 @@
             "id": "3",
             "namespace": "storage-test",
             "machineHostname": "ckad9999",
-            "question": "As part of optimizing storage resources in the cluster, create a StorageClass named `slow-storage` that will dynamically provision storage resources. \n\nUse the provisioner `kubernetes.io/no-provisioner` for this local storage class. \n\nSet the volumeBindingMode to `WaitForFirstConsumer` to delay volume binding until a pod using the PVC is created. \n\nThis storage class will be used for applications that require optimized local storage performance.",
+            "question": "As part of optimizing storage resources in the cluster, create a StorageClass named `fast-storage` that will dynamically provision storage resources. \n\nUse the provisioner `kubernetes.io/no-provisioner` for this local storage class. \n\nSet the volumeBindingMode to `WaitForFirstConsumer` to delay volume binding until a pod using the PVC is created. \n\nThis storage class will be used for applications that require optimized local storage performance.",
             "concepts": ["storage-class", "provisioners", "volume-binding"],
             "verification": [
                 {
@@ -214,7 +214,7 @@
             "id": "8",
             "namespace": "troubleshooting",
             "machineHostname": "ckad9999",
-            "question": "The operations team has reported performance degradation in the cluster. \n\nPod `logging-pod` in namespace `troubleshooting` is consuming excessive CPU resources, affecting other workloads in the cluster. \n\nYour task is to: \n\n1. Identify which container within the pod is causing the high CPU usage \n\n2. Configure appropriate CPU limits for that container to prevent resource abuse while ensuring the application can still function \n\n3. Implement your solution by modifying the pod specification with the necessary resource constraints \n\nEnsure that the pod continues to run successfully after your changes, but with its CPU usage kept within reasonable bounds as defined by the limits you set.",
+            "question": "The operations team has reported performance degradation in the cluster. \n\nPod `logging-pod` in namespace `troubleshooting` is consuming excessive CPU resources, affecting other workloads in the cluster. \n\nYour task is to: \n\n1. Identify which container within the pod is causing the high CPU usage \n\n2. Configure appropriate CPU limits `100m` and memory limits `50Mi` for that container to prevent resource abuse while ensuring the application can still function \n\n3. Implement your solution by modifying the pod specification with the necessary resource constraints \n\nEnsure that the pod continues to run successfully after your changes, but with its CPU usage kept within reasonable bounds as defined by the limits you set.",
             "concepts": ["resource-limits", "resource-requests", "cpu-management", "troubleshooting"],
             "verification": [
                 {
@@ -226,17 +226,10 @@
                 },
                 {
                     "id": "2",
-                    "description": "Pod is running",
+                    "description": "CPU and Memory limits are configured correctly",
                     "verificationScriptFile": "q8_s2_validate_pod_running.sh",
                     "expectedOutput": "0",
                     "weightage": 1
-                },
-                {
-                    "id": "3",
-                    "description": "CPU usage under threshold",
-                    "verificationScriptFile": "q8_s3_validate_cpu_usage.sh",
-                    "expectedOutput": "0",
-                    "weightage": 2
                 }
             ]
         },
@@ -348,7 +341,7 @@
             "id": "12",
             "namespace": "workloads",
             "machineHostname": "ckad9999",
-            "question": "To ensure application reliability, the team needs to implement health checking for a critical service. \n\nCreate a Pod named `health-pod` in namespace `workloads` using the `nginx` image with the following health monitoring configuration: \n\n1) A liveness probe that performs an HTTP GET request to the path `/healthz` on port `80` every 15 seconds to determine if the container is alive. If this check fails, Kubernetes will restart the container. \n\n2) A readiness probe that checks if the container is ready to serve traffic by testing if port `80` is open and accepting connections every 10 seconds. \n\nConfigure appropriate initial delay, timeout, and failure threshold values based on best practices.",
+            "question": "To ensure application reliability, the team needs to implement health checking for a critical service. \n\nCreate a Pod named `health-pod` in namespace `workloads` using the `emilevauge/whoami` image with the following health monitoring configuration: \n\n1) A liveness probe that performs an HTTP GET request to the path `/healthz` on port `80` every `15` seconds to determine if the container is alive. If this check fails, Kubernetes will restart the container. \n\n2) A readiness probe that checks if the container is ready to serve traffic by testing if port `80` is open and accepting connections every 10 seconds. \n\nConfigure appropriate initial delay, timeout, and failure threshold values based on best practices.",
             "concepts": ["pods", "probes", "liveness-probe", "readiness-probe", "health-checks"],
             "verification": [
                 {
@@ -378,7 +371,7 @@
             "id": "13",
             "namespace": "cluster-admin",
             "machineHostname": "ckad9999",
-            "question": "To implement proper access control and security segmentation in the cluster, you need to configure RBAC resources. \n\nFirst, create a `ClusterRole` named `pod-reader` that defines a set of permissions for pod operations. This role should specifically allow three operations on pods: `get` (view individual pods), `watch` (receive notifications about pod changes), and `list` (view collections of pods). \n\nNext, create a `ClusterRoleBinding` named `read-pods` that associates this role with the user `jane` in the namespace `cluster-admin`. \n\nThis binding will grant user `Jane` read-only access to pod resources across all namespaces in the cluster, following the principle of least privilege while allowing her to perform her monitoring duties.",
+            "question": "In the `cluster-admin` namespace, implement proper access control and security segmentation in the cluster by configuring RBAC resources. \n\nFirst, create a `ClusterRole` named `pod-reader` that defines a set of permissions for pod operations. This role should specifically allow three operations on pods: `get` (view individual pods), `watch` (receive notifications about pod changes), and `list` (view collections of pods). \n\nNext, create a `ClusterRoleBinding` named `read-pods` that associates this role with the user `jane` in the namespace `cluster-admin`. \n\nThis binding will grant user `Jane` read-only access to pod resources across all namespaces in the cluster, following the principle of least privilege while allowing her to perform her monitoring duties.",
             "concepts": ["rbac", "cluster-role", "cluster-role-binding", "authorization"],
             "verification": [
                 {
@@ -507,7 +500,7 @@
             "id": "18",
             "namespace": "networking",
             "machineHostname": "ckad9999",
-            "question": "A public-facing web application needs to be exposed to external users. \n\nCreate a NodePort service named `public-web` in namespace `networking` that will expose the `web-frontend` deployment to external users. \n\nConfigure the service to accept external traffic on port `80` and forward it to port `8080` on the deployment`s pods. Set the NodePort to `30080`. \n\nUsing a `NodePort` service will expose the application on a static port on each node in the cluster, making it accessible via any node`s IP address. \n\nEnsure the service selector correctly targets the `web-frontend` deployment pods and that the port configuration is appropriate for a web application. \n\nThis setup will enable external users to access the web application through `<node-ip>:30080`.",
+            "question": "A public-facing web application needs to be exposed to external users. \n\nCreate a NodePort service named `public-web` in namespace `networking` that will expose the `web-frontend` deployment to external users. \n\nConfigure the service to accept external traffic on port `80` and forward it to port `8080` on the deployment's pods. Set the NodePort to `30080`. \n\nUsing a `NodePort` service will expose the application on a static port on each node in the cluster, making it accessible via any node`s IP address. \n\nEnsure the service selector correctly targets the `web-frontend` deployment pods and that the port configuration is appropriate for a web application. \n\nThis setup will enable external users to access the web application through `<node-ip>:30080`.",
             "concepts": ["services", "nodeport", "networking", "exposing-apps"],
             "verification": [
                 {
@@ -537,7 +530,7 @@
             "id": "19",
             "namespace": "networking",
             "machineHostname": "ckad9999",
-            "question": "The API team needs to implement host-based routing for their services. \n\nCreate an Ingress resource named `api-ingress` in namespace `networking` that implements the following routing rule: \n\n- All HTTP traffic for the hostname `api.example.com` should be directed to the service `api-service` on port `80`. \n\nThis Ingress will utilize the cluster`s ingress controller to provide more sophisticated HTTP routing than is possible with Services alone. \n\nMake sure to properly configure the host field with the exact domain name and set up the correct backend service reference.",
+            "question": "The API team needs to implement host-based routing for their services. \n\nCreate an Ingress resource named `api-ingress` in namespace `networking` that implements the following routing rule: \n\n- All HTTP traffic for the hostname `api.example.com` should be directed to the service `api-service` on port `80`. \n\nThis Ingress will utilize the cluster's ingress controller to provide more sophisticated HTTP routing than is possible with Services alone. \n\nMake sure to properly configure the host field with the exact domain name and set up the correct backend service reference.",
             "concepts": ["ingress", "networking", "host-based-routing", "http-routing"],
             "verification": [
                 {
@@ -567,15 +560,15 @@
             "id": "20",
             "namespace": "networking",
             "machineHostname": "ckad9999",
-            "question": "A one-time configuration backup operation needs to be performed. \n\nCreate a Kubernetes Job named `backup-job` in the `networking` namespace to handle this task. \n\nThe job should create a single pod using the `busybox` image with a command that copies all files from the directory `/etc/config` to the `/backup` directory. \n\nConfigure the job with the following specifications: \n\n- Set `restartPolicy: Never` to ensure that containers are not restarted after completion or failure \n- Set `backoffLimit: 0` so that the job will not be retried if it fails \n\nThis job represents a one-time, batch operation that should either complete successfully or fail without retries, allowing administrators to then investigate any issues manually. \n\nVerify that the job completes successfully and that the files are properly copied to the destination directory.",
+            "question": "Create a simple batch processing task to demonstrate the Job resource type. \n\nCreate a Kubernetes Job named `hello-job` in the `networking` namespace that runs a pod with the `busybox` image. \n\nThe job should execute a single command that prints 'Hello from Kubernetes job!' to standard output, and then completes successfully. \n\nConfigure the job to: \n\n1. Run only once and not be restarted after completion \n2. Have a deadline of 30 seconds (the job will be terminated if it doesn't complete within this time) \n3. Use `Never` as the restart policy for the pod \n\nThis job demonstrates the basic pattern for one-time task execution in Kubernetes.",
             "concepts": ["jobs", "batch-processing", "pods", "containers"],
             "verification": [
                 {
                     "id": "1",
-                    "description": "Job is created and completes successfully",
-                    "verificationScriptFile": "q20_s1_validate_job_completed.sh",
+                    "description": "Job is created with correct name",
+                    "verificationScriptFile": "q20_s1_validate_job_created.sh",
                     "expectedOutput": "0",
-                    "weightage": 3
+                    "weightage": 2
                 },
                 {
                     "id": "2",
@@ -583,6 +576,13 @@
                     "verificationScriptFile": "q20_s2_validate_job_config.sh",
                     "expectedOutput": "0",
                     "weightage": 2
+                },
+                {
+                    "id": "3",
+                    "description": "Job completes successfully",
+                    "verificationScriptFile": "q20_s3_validate_job_completed.sh",
+                    "expectedOutput": "0",
+                    "weightage": 1
                 }
             ]
         },

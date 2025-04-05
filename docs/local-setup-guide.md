@@ -4,7 +4,7 @@
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/nishanb/ck-x.git
+git clone https://github.com/@nishanb/CK-X.git
 cd ck-x
 ```
 
@@ -12,6 +12,10 @@ cd ck-x
 ```bash
 ./scripts/compose-deploy.sh
 ```
+
+Alternatively,
+
+2. Use the command `docker compose up` and manually navigate to `http://localhost:30080` in your browser
 
 The script will deploy all services locally and open the application in your browser.
 

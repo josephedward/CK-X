@@ -43,6 +43,6 @@ RUN echo "UserKnownHostsFile /dev/null" >> /home/candidate/.ssh/config
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-COPY agent.py /home/candidate/agent.py
+COPY agent.py /tmp/agent.py
 
 RUN sed -i '/### every exit != 0 fails the script/a /usr/local/bin/startup.sh' /dockerstartup/vnc_startup.sh

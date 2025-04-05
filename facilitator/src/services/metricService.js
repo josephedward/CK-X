@@ -23,7 +23,7 @@ class MetricService {
         if (!this.TRACK_METRICS) return;
         try {
             const metricData = {
-                id: examId,
+                examId: examId,
                 timestamp: new Date().toISOString(),
                 ...data
             };

@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# Validate that the pod-scheduling namespace exists
-NS=$(kubectl get namespace pod-scheduling -o jsonpath='{.metadata.name}' 2>/dev/null)
-
-if [[ "$NS" == "pod-scheduling" ]]; then
-    # Namespace exists
-    exit 0
+# Check if the namespace exists
+kubectl get namespace crd-demo &> /dev/null
+if [[ $? -eq 0 ]]; then
+  echo "✅ Namespace 'crd-demo' exists"
+  exit 0
 else
-    # Namespace does not exist
-    echo "Namespace 'pod-scheduling' does not exist"
-    exit 1
+  echo "❌ Namespace 'crd-demo' not found"
+  exit 1
 fi 

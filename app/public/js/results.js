@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     currentExamBtn.addEventListener('click', () => {
         if (currentExamId) {
-            window.location.href = `/exam.html?id=${currentExamId}`;
+            window.open(`/exam.html?id=${currentExamId}`, '_blank');
         } else {
             showError('No exam ID available for redirection.');
         }
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     viewAnswersBtn.addEventListener('click', () => {
         if (currentExamId) {
-            window.location.href = `/answers.html?id=${currentExamId}`;
+            window.open(`/answers.html?id=${currentExamId}`, '_blank');
         } else {
             showError('No exam ID available for viewing answers.');
         }

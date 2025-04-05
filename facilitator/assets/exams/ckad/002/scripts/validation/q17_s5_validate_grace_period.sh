@@ -7,8 +7,8 @@ if [[ "$POD" == "lifecycle-pod" ]]; then
     # Pod exists, now check if it has a termination grace period
     GRACE_PERIOD=$(kubectl get pod lifecycle-pod -n pod-lifecycle -o jsonpath='{.spec.terminationGracePeriodSeconds}' 2>/dev/null)
     
-    if [[ "$GRACE_PERIOD" == "45" ]]; then
-        # Grace period is correctly set to 45 seconds
+    if [[ "$GRACE_PERIOD" == "30" ]]; then
+        # Grace period is correctly set to 30 seconds
         exit 0
     elif [[ "$GRACE_PERIOD" == "" ]]; then
         echo "Pod 'lifecycle-pod' does not have a termination grace period specified (using default of 30 seconds)"

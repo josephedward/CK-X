@@ -23,7 +23,7 @@ print_header() {
     echo -e "${CYAN}CK-X Simulator: Kubernetes Certification Exam Simulator${NC}"
     echo -e "${CYAN}Practice in a realistic environment for CKA, CKAD, and more${NC}"
     echo -e "${CYAN}==============================================================${NC}"
-    echo -e "${CYAN} Facing any issues? Please report at: https://github.com/nishanb/ck-x/issues${NC}"
+    echo -e "${CYAN} Facing any issues? Please report at: https://github.com/nishanb/CK-X/issues${NC}"
     echo
 }
 
@@ -184,7 +184,7 @@ main() {
     
     # Download docker-compose.yml
     echo -e "${YELLOW}Downloading Docker Compose file...${NC}"
-    curl -fsSL https://raw.githubusercontent.com/nishanb/ck-x/main/docker-compose.yml -o docker-compose.yml
+    curl -fsSL https://raw.githubusercontent.com/nishanb/ck-x/master/docker-compose.yaml -o docker-compose.yml
     
     if [ ! -f docker-compose.yml ]; then
         echo -e "${RED}✗ Failed to download docker-compose.yml${NC}"

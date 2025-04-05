@@ -2,15 +2,18 @@
 
 # Script to build and push Docker images for CK-X Simulator
 # This script builds all images defined in the compose.yaml file and pushes them to Docker Hub
+# Supports multi-architecture builds (linux/amd64 and linux/arm64)
 
 # Set variables
 DOCKER_HUB_USERNAME=${DOCKER_HUB_USERNAME:-nishanb}
 REGISTRY="${DOCKER_HUB_USERNAME}"
 SKIP_LOGIN_CHECK=${SKIP_LOGIN_CHECK:-false}
+PLATFORMS="linux/amd64,linux/arm64"
 
 # Get the script directory to handle relative paths correctly
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+echo "PROJECT_ROOT: ${PROJECT_ROOT}"
 
 # Define color codes for output
 RED='\033[0;31m'
@@ -22,6 +25,30 @@ NC='\033[0m' # No Color
 echo -e "${GREEN}=======================================${NC}"
 echo -e "${GREEN}  CK-X Simulator - Build & Push Tool  ${NC}"
 echo -e "${GREEN}=======================================${NC}"
+echo
+
+# Check if buildx is available
+echo -e "${YELLOW}Checking Docker buildx availability...${NC}"
+if ! docker buildx version > /dev/null 2>&1; then
+    echo -e "${RED}Docker buildx is not available. Please ensure you have Docker 19.03 or newer with experimental features enabled.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}Docker buildx is available.${NC}"
+
+# Create a new builder instance if it doesn't exist
+BUILDER_NAME="ck-x-multiarch-builder"
+if ! docker buildx inspect ${BUILDER_NAME} > /dev/null 2>&1; then
+    echo -e "${YELLOW}Creating new buildx builder: ${BUILDER_NAME}${NC}"
+    docker buildx create --name ${BUILDER_NAME} --use --bootstrap
+else
+    echo -e "${YELLOW}Using existing buildx builder: ${BUILDER_NAME}${NC}"
+    docker buildx use ${BUILDER_NAME}
+fi
+
+# Ensure the builder is running
+echo -e "${YELLOW}Bootstrapping buildx builder...${NC}"
+docker buildx inspect --bootstrap
+echo -e "${GREEN}Buildx builder is ready.${NC}"
 echo
 
 # Check if user is logged in to Docker Hub (with option to skip)
@@ -75,14 +102,15 @@ TAG="${TAG_INPUT:-latest}"
 echo -e "${GREEN}Using tag: ${TAG}${NC}"
 echo
 
-# Function to build and push a single image
+# Function to build and push a single image with multi-architecture support
 build_and_push() {
     local COMPONENT=$1
     local CONTEXT_PATH=$2
     local IMAGE_NAME="${REGISTRY}/ck-x-simulator-${COMPONENT}:${TAG}"
     
-    echo -e "${YELLOW}Building image: ${IMAGE_NAME}${NC}"
+    echo -e "${YELLOW}Building multi-architecture image: ${IMAGE_NAME}${NC}"
     echo -e "Context path: ${CONTEXT_PATH}"
+    echo -e "Platforms: ${PLATFORMS}"
     
     # Check if the context path exists
     if [ ! -d "${CONTEXT_PATH}" ]; then
@@ -90,24 +118,18 @@ build_and_push() {
         exit 1
     fi
     
-    # Build the image
-    docker build -t ${IMAGE_NAME} ${CONTEXT_PATH}
+    # Build and push the multi-architecture image in one command
+    echo -e "${YELLOW}Building and pushing image for multiple architectures...${NC}"
+    docker buildx build \
+        --platform=${PLATFORMS} \
+        --tag ${IMAGE_NAME} \
+        --push \
+        ${CONTEXT_PATH}
     
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}Successfully built ${IMAGE_NAME}${NC}"
-        
-        # Push the image
-        echo -e "${YELLOW}Pushing image: ${IMAGE_NAME}${NC}"
-        docker push ${IMAGE_NAME}
-        
-        if [ $? -eq 0 ]; then
-            echo -e "${GREEN}Successfully pushed ${IMAGE_NAME}${NC}"
-        else
-            echo -e "${RED}Failed to push ${IMAGE_NAME}${NC}"
-            exit 1
-        fi
+        echo -e "${GREEN}Successfully built and pushed ${IMAGE_NAME} for platforms: ${PLATFORMS}${NC}"
     else
-        echo -e "${RED}Failed to build ${IMAGE_NAME}${NC}"
+        echo -e "${RED}Failed to build/push ${IMAGE_NAME}${NC}"
         exit 1
     fi
     
@@ -115,7 +137,7 @@ build_and_push() {
 }
 
 # Confirm before proceeding
-echo -e "${YELLOW}This script will build and push the following images with tag '${TAG}':${NC}"
+echo -e "${YELLOW}This script will build and push the following multi-architecture images (${PLATFORMS}) with tag '${TAG}':${NC}"
 echo " - ${REGISTRY}/ck-x-simulator-remote-desktop:${TAG}"
 echo " - ${REGISTRY}/ck-x-simulator-webapp:${TAG}"
 echo " - ${REGISTRY}/ck-x-simulator-nginx:${TAG}"
@@ -132,7 +154,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # Build and push each image
-echo -e "${GREEN}Starting build and push process...${NC}"
+echo -e "${GREEN}Starting multi-architecture build and push process...${NC}"
 echo
 
 # Remote Desktop
@@ -157,8 +179,9 @@ build_and_push "cluster" "${PROJECT_ROOT}/kind-cluster"
 build_and_push "facilitator" "${PROJECT_ROOT}/facilitator"
 
 echo -e "${GREEN}=======================================${NC}"
-echo -e "${GREEN}  All images built and pushed successfully!  ${NC}"
+echo -e "${GREEN}  All multi-architecture images built and pushed successfully!  ${NC}"
 echo -e "${GREEN}  Tag: ${TAG}  ${NC}"
+echo -e "${GREEN}  Platforms: ${PLATFORMS}  ${NC}"
 echo -e "${GREEN}=======================================${NC}"
 
 # Done

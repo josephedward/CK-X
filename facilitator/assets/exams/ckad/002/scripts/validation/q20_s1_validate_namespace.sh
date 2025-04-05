@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# Validate that the network-policy namespace exists
-NS=$(kubectl get namespace network-policy -o jsonpath='{.metadata.name}' 2>/dev/null)
-
-if [[ "$NS" == "network-policy" ]]; then
-    # Namespace exists
-    exit 0
+# Check if namespace exists
+NS_EXISTS=$(kubectl get namespace pod-configuration --no-headers --output=name 2>/dev/null | wc -l)
+if [[ "$NS_EXISTS" -eq 1 ]]; then
+  echo "✅ Namespace 'pod-configuration' exists"
+  exit 0
 else
-    # Namespace does not exist
-    echo "Namespace 'network-policy' does not exist"
-    exit 1
+  echo "❌ Namespace 'pod-configuration' not found"
+  exit 1
 fi 

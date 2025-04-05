@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# Delete the storage namespace if it exists
-echo "Setting up environment for Question 12 (StatefulSet)..."
-kubectl delete namespace storage --ignore-not-found=true
+# Make sure Docker is available
+which docker > /dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+  echo "Docker is not available on this system"
+  exit 1
+fi
 
-# Wait for deletion to complete
-sleep 2
+# Create directory for working files if it doesn't exist
+mkdir -p /tmp
 
-# Confirm environment is ready
-echo "Environment ready for Question 12"
+# Clean up any existing resources that might conflict
+docker stop my-web > /dev/null 2>&1
+docker rm my-web > /dev/null 2>&1
+docker rmi my-nginx:v1 > /dev/null 2>&1
+rm -f /tmp/Dockerfile /tmp/index.html > /dev/null 2>&1
+
+echo "Setup complete for Question 12"
 exit 0 

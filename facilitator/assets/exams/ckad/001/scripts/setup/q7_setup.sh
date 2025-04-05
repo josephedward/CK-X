@@ -47,7 +47,7 @@ spec:
     app: web  # Incorrect selector, should be app=web-app
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 3030
 EOF
 
 echo "Setup complete for Question 7: Created service 'web-service' with incorrect selector"

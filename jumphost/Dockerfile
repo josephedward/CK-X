@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
     vim \
     bash-completion\
     nano \
-    docker.io
+    docker.io\
+    jq
 
 
 #kubectl

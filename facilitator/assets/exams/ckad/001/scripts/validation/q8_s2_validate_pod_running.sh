@@ -1,6 +1,7 @@
 #!/bin/bash
 # Validate that the 'logging-pod' is running in namespace 'troubleshooting'
 
+
 NAMESPACE="troubleshooting"
 POD_NAME="logging-pod"
 
@@ -12,29 +13,23 @@ if [ -z "$POD_STATUS" ]; then
   exit 1
 fi
 
+#validate `100m` and memory limits `50Mi` set for the container 
+
 # Check if the pod is running
 if [ "$POD_STATUS" != "Running" ]; then
-  echo "❌ Pod '$POD_NAME' exists but is not running (current status: $POD_STATUS)"
-  
-  # Get additional details about non-running pod
-  CONTAINER_STATUSES=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath='{.status.containerStatuses[*].state}' 2>/dev/null)
-  
-  if [ -n "$CONTAINER_STATUSES" ]; then
-    echo "Container statuses: $CONTAINER_STATUSES"
-  fi
-  
+  echo "❌ Pod '$POD_NAME' exists but is not running (current status: $POD_STATUS)" 
   exit 1
 fi
 
-# Check if all containers are ready
-READY_COUNT=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath='{.status.containerStatuses[*].ready}' | grep -o "true" | wc -l)
-CONTAINER_COUNT=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath='{.spec.containers[*].name}' | wc -w)
+# Check if the container has the correct CPU and memory limits
+CONTAINER_NAME=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath='{.spec.containers[0].name}')
+CPU_LIMIT=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath="{.spec.containers[?(@.name==\"$CONTAINER_NAME\")].resources.limits.cpu}")  
+MEMORY_LIMIT=$(kubectl get pod $POD_NAME -n $NAMESPACE -o jsonpath="{.spec.containers[?(@.name==\"$CONTAINER_NAME\")].resources.limits.memory}")
 
-if [ "$READY_COUNT" -ne "$CONTAINER_COUNT" ]; then
-  echo "❌ Pod '$POD_NAME' is running, but not all containers are ready ($READY_COUNT of $CONTAINER_COUNT ready)"
+if [ "$CPU_LIMIT" != "100m" ] || [ "$MEMORY_LIMIT" != "50Mi" ]; then
+  echo "❌ Container '$CONTAINER_NAME' does not have the correct CPU and memory limits"
   exit 1
 fi
 
-# All checks passed
-echo "✅ Pod '$POD_NAME' is running and all containers are ready"
+echo "✅ Container '$CONTAINER_NAME' has the correct CPU and memory limits" 
 exit 0 
