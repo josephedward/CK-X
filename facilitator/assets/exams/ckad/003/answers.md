@@ -59,10 +59,11 @@ Helm management (degraded path)
 
 ```bash
 # If helm available
-helm repo add localcharts http://localhost:6000 && helm repo update
+helm repo add bitnami https://charts.bitnami.com/bitnami || true
+helm repo update
 helm -n ckad-q04 uninstall internal-issue-report-apiv1 || true
-helm -n ckad-q04 upgrade --install internal-issue-report-apiv2 localcharts/nginx
-helm -n ckad-q04 upgrade --install internal-issue-report-apache localcharts/apache --set replicaCount=2
+helm -n ckad-q04 upgrade --install internal-issue-report-apiv2 bitnami/nginx
+helm -n ckad-q04 upgrade --install internal-issue-report-apache bitnami/apache --set replicaCount=2
 helm ls -A | awk '/pending-install/ {print $1, $2}' | while read ns rel; do helm -n "$ns" uninstall "$rel"; done
 
 # Degraded acceptance (no helm): ensure a deployment exists named internal-issue-report-apache with 2 replicas

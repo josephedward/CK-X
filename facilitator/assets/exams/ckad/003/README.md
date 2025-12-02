@@ -13,7 +13,7 @@ Namespaces
 - Special for Q7: `ckad-q07-source`, `ckad-q07-target`
 
 Gotchas
-- Q4 (Helm): If `helm` CLI/repo is not available, validation accepts a degraded path: a Deployment named `internal-issue-report-apache` with `replicas=2` in `ckad-q04`.
+- Q4 (Helm): If `helm` is available, setup seeds baseline releases in `ckad-q04` from the Bitnami repo (`bitnami/nginx`) to make delete/upgrade meaningful. If Helm/repos are not available, validators accept a degraded path: a Deployment named `internal-issue-report-apache` with `replicas=2` in `ckad-q04`.
 - Q11 (Docker/Podman): If not available, validators accept a logs file at `/opt/course/exam3/q11/logs` containing the marker `SUN_CIPHER_ID`.
 - Q12/13 (Storage): PVC may stay `Pending` without a matching provisioner; validators account for this.
 - Q18 (Service): Validators check Service endpoints after selector/port fix.
@@ -22,4 +22,3 @@ Gotchas
 Validate Locally
 - Prefer `make up` and `make check-answers` workflows.
 - Ensure `.env` reflects `CKX_PLATFORM=linux/arm64` and images support arm64.
-
