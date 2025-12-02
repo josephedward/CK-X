@@ -13,7 +13,7 @@ help:
 	@echo "  make pull            # Pull images"
 	@echo "  make reset           # Down + remove volumes, then pull"
 	@echo "  make check-answers   # Verify answers.md paths exist"
-	@echo "  make release-exam3   # Build and push multi-arch images for exam3"
+ 
 	@echo "  make test            # Run repository tests"
 
 .PHONY: up
@@ -44,16 +44,9 @@ check-answers:
 	bash scripts/check_answers.sh
 
 # Usage: DOCKERHUB_NAMESPACE=<ns> VERSION=<tag> make release-exam3
-.PHONY: release-exam3
-release-exam3:
-	@if [[ -z "$$DOCKERHUB_NAMESPACE" || -z "$$VERSION" ]]; then \
-		echo "Set DOCKERHUB_NAMESPACE and VERSION, e.g. DOCKERHUB_NAMESPACE=je01 VERSION=exam3-v2"; \
-		exit 1; \
-	fi
-	bash scripts/buildx_multiarch_exam3.sh
-
 .PHONY: build-and-push
-build-and-push: release-exam3
+build-and-push:
+	@echo "Build/push disabled. Use prebuilt images via .env (CKX_IMAGE_NS/CKX_VERSION)."
 
 .PHONY: test
 test:
