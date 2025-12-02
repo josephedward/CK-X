@@ -192,7 +192,8 @@
       "machineHostname": "ckad9999",
       "question": "Fix the misconfiguration in Namespace `ckad-q18` where Service `manager-api-svc` should expose Deployment `manager-api-deployment` but has no endpoints. After fixing selector/ports, the Service should have endpoints.",
       "verification": [
-        {"id": "1", "description": "Service has endpoints", "verificationScriptFile": "q18_s2_validate_service_endpoints.sh", "expectedOutput": "0", "weightage": 4}
+        {"id": "1", "description": "Service has endpoints", "verificationScriptFile": "q18_s2_validate_service_endpoints.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Endpoints expose port 4444", "verificationScriptFile": "q18_s3_validate_endpoint_port.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {

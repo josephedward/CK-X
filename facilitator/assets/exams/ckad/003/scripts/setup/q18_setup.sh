@@ -41,4 +41,3 @@ spec:
 EOF
 
 mkdir -p /opt/course/exam3/q18
-
