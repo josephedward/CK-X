@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-q07-source >/dev/null 2>&1 || kubectl create ns ckad-q07-source
-kubectl get ns ckad-q07-target >/dev/null 2>&1 || kubectl create ns ckad-q07-target
+kubectl get ns pod-move-source >/dev/null 2>&1 || kubectl create ns pod-move-source
+kubectl get ns pod-move-target >/dev/null 2>&1 || kubectl create ns pod-move-target
 
 # Seed source pod with discoverable annotation
 cat <<'EOF' | kubectl apply -f -
@@ -9,7 +9,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: webserver-sat-003
-  namespace: ckad-q07-source
+  namespace: pod-move-source
   labels:
     app: web
   annotations:
@@ -21,4 +21,3 @@ spec:
 EOF
 
 mkdir -p /opt/course/exam3/q07
-

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-p1 >/dev/null 2>&1 || kubectl create ns ckad-p1
+kubectl get ns p1-liveness >/dev/null 2>&1 || kubectl create ns p1-liveness
 
 cat > /opt/course/exam3/p1/project-23-api.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project-23-api
-  namespace: ckad-p1
+  namespace: p1-liveness
 spec:
   replicas: 1
   selector:
@@ -24,4 +24,3 @@ spec:
 EOF
 
 kubectl apply -f /opt/course/exam3/p1/project-23-api.yaml
-

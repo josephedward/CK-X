@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-q17 >/dev/null 2>&1 || kubectl create ns ckad-q17
+kubectl get ns init-container >/dev/null 2>&1 || kubectl create ns init-container
 
 cat > /opt/course/exam3/q17/test-init-container.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: test-init-container
-  namespace: ckad-q17
+  namespace: init-container
 spec:
   replicas: 1
   selector:
@@ -29,4 +29,3 @@ EOF
 
 kubectl apply -f /opt/course/exam3/q17/test-init-container.yaml
 mkdir -p /opt/course/exam3/q17
-

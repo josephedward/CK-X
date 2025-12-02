@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-q16 >/dev/null 2>&1 || kubectl create ns ckad-q16
+kubectl get ns sidecar-logging >/dev/null 2>&1 || kubectl create ns sidecar-logging
 
 cat > /opt/course/exam3/q16/cleaner.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cleaner
-  namespace: ckad-q16
+  namespace: sidecar-logging
 spec:
   replicas: 1
   selector:
@@ -30,4 +30,3 @@ EOF
 
 kubectl apply -f /opt/course/exam3/q16/cleaner.yaml
 mkdir -p /opt/course/exam3/q16
-

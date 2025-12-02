@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ns=ckad-q08
+ns=rollout
 name=api-new-c32
 desired=$(kubectl -n "$ns" get deploy "$name" -o jsonpath='{.spec.replicas}')
 [ -z "$desired" ] && desired=1

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-q18 >/dev/null 2>&1 || kubectl create ns ckad-q18
+kubectl get ns svc-fix-endpoints >/dev/null 2>&1 || kubectl create ns svc-fix-endpoints
 
 # Create deployment
 cat <<'EOF' | kubectl apply -f -
@@ -8,7 +8,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: manager-api-deployment
-  namespace: ckad-q18
+  namespace: svc-fix-endpoints
 spec:
   replicas: 2
   selector:
@@ -30,7 +30,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: manager-api-svc
-  namespace: ckad-q18
+  namespace: svc-fix-endpoints
 spec:
   selector:
     app: wrong-selector

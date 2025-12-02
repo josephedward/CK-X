@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl -n ckad-q06 get pod pod6 -o name >/dev/null
-
+kubectl -n readiness get pod pod6 -o name >/dev/null

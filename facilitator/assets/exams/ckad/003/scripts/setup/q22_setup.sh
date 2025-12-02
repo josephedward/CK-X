@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-p3 >/dev/null 2>&1 || kubectl create ns ckad-p3
+kubectl get ns p3-readiness >/dev/null 2>&1 || kubectl create ns p3-readiness
 
 # Wrong readinessProbe port to be fixed by user
 cat <<'EOF' | kubectl apply -f -
@@ -8,7 +8,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: earth-3cc-web
-  namespace: ckad-p3
+  namespace: p3-readiness
 spec:
   replicas: 4
   selector:
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: earth-3cc-web-svc
-  namespace: ckad-p3
+  namespace: p3-readiness
 spec:
   selector:
     app: e3cc

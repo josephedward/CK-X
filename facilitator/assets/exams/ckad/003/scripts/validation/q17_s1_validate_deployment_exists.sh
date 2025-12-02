@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl -n ckad-q17 get deploy test-init-container -o name >/dev/null
-
+kubectl -n init-container get deploy test-init-container -o name >/dev/null

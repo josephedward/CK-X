@@ -7,8 +7,8 @@ set -euo pipefail
 # - Only seed once; avoid re-installing after student deletes releases
 
 OUT_DIR=/opt/course/exam3/q04
-NS=ckad-q04
-STUCK_NS=ckad-q04-stuck
+NS=helm
+STUCK_NS=helm-stuck
 PENDING_REL=internal-issue-report-pending
 SEED_MARKER="$OUT_DIR/.seeded"
 
@@ -30,7 +30,7 @@ if command -v helm >/dev/null 2>&1; then
   fi
   helm repo update >/dev/null 2>&1 || true
 
-  # Baseline releases in ckad-q04
+  # Baseline releases in helm
   if ! helm -n "$NS" list 2>/dev/null | awk 'NR>1{print $1}' | grep -qx "internal-issue-report-apiv1"; then
     helm -n "$NS" upgrade --install internal-issue-report-apiv1 bitnami/nginx >/dev/null 2>&1 || true
   fi

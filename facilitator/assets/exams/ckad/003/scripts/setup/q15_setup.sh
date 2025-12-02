@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl get ns ckad-q15 >/dev/null 2>&1 || kubectl create ns ckad-q15
+kubectl get ns configmap-web >/dev/null 2>&1 || kubectl create ns configmap-web
 
 # Seed deployment that expects a configmap named configmap-web-moon-html
 cat <<'EOF' | kubectl apply -f -
@@ -8,7 +8,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-moon
-  namespace: ckad-q15
+  namespace: configmap-web
 spec:
   replicas: 1
   selector:
@@ -35,4 +35,3 @@ cat > /opt/course/exam3/q15/web-moon.html <<'EOF'
   <body>Welcome to Moonpie!</body>
 </html>
 EOF
-

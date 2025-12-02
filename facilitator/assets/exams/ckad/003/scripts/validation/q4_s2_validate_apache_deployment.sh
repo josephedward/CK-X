@@ -8,10 +8,10 @@ if ! command -v helm >/dev/null 2>&1; then
 fi
 
 # Verify helm release exists
-if ! helm list -n ckad-q04 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx "internal-issue-report-apache"; then
+if ! helm list -n helm 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx "internal-issue-report-apache"; then
   exit 1
 fi
 
 # Verify resulting Deployment has replicas=2
-replicas=$(kubectl -n ckad-q04 get deploy internal-issue-report-apache -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "")
+replicas=$(kubectl -n helm get deploy internal-issue-report-apache -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "")
 test "$replicas" = "2"

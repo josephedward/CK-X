@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 set -euo pipefail
-kubectl -n ckad-q10 get pod project-plt-6cc-api -o name >/dev/null
-
+kubectl -n services-curl get pod project-plt-6cc-api -o name >/dev/null
