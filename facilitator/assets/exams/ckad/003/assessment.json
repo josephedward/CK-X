@@ -1,0 +1,237 @@
+{
+  "questions": [
+    {
+      "id": "1",
+      "namespace": "ckad-q01",
+      "machineHostname": "ckad9999",
+      "question": "The DevOps team would like to get the list of all Namespaces in the cluster. Save the list to `/opt/course/exam3/q01/namespaces` on localhost.",
+      "verification": [
+        {"id": "1", "description": "Output file exists", "verificationScriptFile": "q1_s1_validate_output_file.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Output lists default namespace", "verificationScriptFile": "q1_s2_validate_contains_default.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "2",
+      "namespace": "ckad-q02",
+      "machineHostname": "ckad9999",
+      "question": "Create a single Pod of image `httpd:2.4.41-alpine` in Namespace `ckad-q02`. The Pod should be named `pod1` and the container should be named `pod1-container`. Write a kubectl command that outputs the status of that exact Pod to `/opt/course/exam3/q02/pod1-status-command.sh`.",
+      "verification": [
+        {"id": "1", "description": "Namespace exists", "verificationScriptFile": "q2_s1_validate_namespace.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Pod exists", "verificationScriptFile": "q2_s2_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "Container name is correct", "verificationScriptFile": "q2_s3_validate_container_name.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "Status command file exists", "verificationScriptFile": "q2_s4_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "3",
+      "namespace": "ckad-q03",
+      "machineHostname": "ckad9999",
+      "question": "Create a Job manifest at `/opt/course/exam3/q03/job.yaml` named `neb-new-job` in namespace `ckad-q03` that runs image `busybox:1.31.0` with command `sleep 2 && echo done`, sets `completions=3`, `parallelism=2`, and labels pods with `id=awesome-job`. Start the Job. The container should be named `neb-new-job-container`.",
+      "verification": [
+        {"id": "1", "description": "Job exists", "verificationScriptFile": "q3_s1_validate_job_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Job completions set to 3", "verificationScriptFile": "q3_s2_validate_job_completions.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Job parallelism set to 2", "verificationScriptFile": "q3_s3_validate_job_parallelism.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Pods have label id=awesome-job", "verificationScriptFile": "q3_s4_validate_job_label.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "5", "description": "Job manifest file exists", "verificationScriptFile": "q3_s5_validate_job_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "4",
+      "namespace": "ckad-q04",
+      "machineHostname": "ckad9999",
+      "question": "Using `helm` in Namespace `ckad-q04`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `localcharts/nginx`, install a new release `internal-issue-report-apache` from `localcharts/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install`. If `helm` is not available, focus on ensuring a Deployment named `internal-issue-report-apache` exists with `replicas=2`.",
+      "verification": [
+        {"id": "1", "description": "Namespace exists", "verificationScriptFile": "q4_s1_validate_namespace.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Apache release deployed with 2 replicas (degraded check)", "verificationScriptFile": "q4_s2_validate_apache_deployment.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "5",
+      "namespace": "ckad-q05",
+      "machineHostname": "ckad9999",
+      "question": "Create ServiceAccount `neptune-sa-v2` in `ckad-q05` and write the base64-decoded token from its Secret to `/opt/course/exam3/q05/token` on localhost.",
+      "verification": [
+        {"id": "1", "description": "Token file exists", "verificationScriptFile": "q5_s1_validate_token_file_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Token file is non-empty", "verificationScriptFile": "q5_s2_validate_token_file_not_empty.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "6",
+      "namespace": "ckad-q06",
+      "machineHostname": "ckad9999",
+      "question": "Create Pod `pod6` in Namespace `ckad-q06` using `busybox:1.31.0` with readinessProbe executing `cat /tmp/ready` (initialDelaySeconds=`5`, periodSeconds=`10`). The container command should be `sh -c 'touch /tmp/ready && sleep 1d'`. Confirm Pod becomes Ready.",
+      "verification": [
+        {"id": "1", "description": "Pod exists", "verificationScriptFile": "q6_s1_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Pod is Ready", "verificationScriptFile": "q6_s2_validate_pod_ready.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "7",
+      "namespace": "ckad-q07",
+      "machineHostname": "ckad9999",
+      "question": "Search for the e-commerce Pod (annotation mentioning `my-happy-shop`) in Namespace `ckad-q07-source` and move it to `ckad-q07-target`. The Pod name is `webserver-sat-003`. It is acceptable to delete and recreate.",
+      "verification": [
+        {"id": "1", "description": "Pod exists in target namespace", "verificationScriptFile": "q7_s1_validate_pod_in_target.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Pod no longer exists in source", "verificationScriptFile": "q7_s2_validate_pod_absent_in_source.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "8",
+      "namespace": "ckad-q08",
+      "machineHostname": "ckad9999",
+      "question": "There is an existing Deployment `api-new-c32` in `ckad-q08` with a broken revision. Check the rollout history, identify a working revision, and rollback so the Deployment becomes Ready.",
+      "verification": [
+        {"id": "1", "description": "Deployment image fixed (not invalid)", "verificationScriptFile": "q8_s1_validate_image_fixed.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Deployment is Ready after rollback", "verificationScriptFile": "q8_s2_validate_deployment_ready.sh", "expectedOutput": "0", "weightage": 3}
+      ]
+    },
+    {
+      "id": "9",
+      "namespace": "ckad-q09",
+      "machineHostname": "ckad9999",
+      "question": "Convert the single Pod `holy-api` in Namespace `ckad-q09` into a Deployment named `holy-api` with `replicas=3`. Delete the original Pod. Set container securityContext `allowPrivilegeEscalation=false` and `privileged=false`. Save the Deployment YAML to `/opt/course/exam3/q09/holy-api-deployment.yaml`.",
+      "verification": [
+        {"id": "1", "description": "Deployment exists with correct name", "verificationScriptFile": "q9_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Deployment has 3 replicas", "verificationScriptFile": "q9_s2_validate_replicas.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Security context hardened", "verificationScriptFile": "q9_s3_validate_security_context.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "YAML file exists", "verificationScriptFile": "q9_s4_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "10",
+      "namespace": "ckad-q10",
+      "machineHostname": "ckad9999",
+      "question": "Create a ClusterIP Service `project-plt-6cc-svc` in `ckad-q10` exposing Pod `project-plt-6cc-api` (image `nginx:1.17.3-alpine`, label `project=plt-6cc-api`) using port mapping `3333:80`. Use a temporary Pod to curl the Service and write the response to `/opt/course/exam3/q10/service_test.html` and the app logs to `/opt/course/exam3/q10/service_test.log`.",
+      "verification": [
+        {"id": "1", "description": "Service exists", "verificationScriptFile": "q10_s1_validate_service_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Pod exists", "verificationScriptFile": "q10_s2_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Curl output saved", "verificationScriptFile": "q10_s3_validate_response_file.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Logs file saved", "verificationScriptFile": "q10_s4_validate_logs_file.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "11",
+      "namespace": "ckad-q11",
+      "machineHostname": "ckad9999",
+      "question": "Build and push two images (docker and podman variants) for a Golang app at `/opt/course/exam3/q11/image`, set ENV `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f`, run a container with podman, and write logs to `/opt/course/exam3/q11/logs`. If Docker/Podman/registry are unavailable, a degraded path is accepted: create a log file containing the `SUN_CIPHER_ID` marker.",
+      "verification": [
+        {"id": "1", "description": "Logs file exists", "verificationScriptFile": "q11_s1_validate_logs_file_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Logs contain SUN_CIPHER_ID", "verificationScriptFile": "q11_s2_validate_logs_marker.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "12",
+      "namespace": "ckad-q12",
+      "machineHostname": "ckad9999",
+      "question": "Create PV `earth-project-earthflower-pv` (2Gi, RWO, hostPath `/Volumes/Data`, no storageClass), PVC `earth-project-earthflower-pvc` (2Gi, RWO, no storageClass) in `ckad-q12`, and a Deployment `project-earthflower` mounting it at `/tmp/project-data` using `httpd:2.4.41-alpine`.",
+      "verification": [
+        {"id": "1", "description": "PV exists", "verificationScriptFile": "q12_s1_validate_pv_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "PVC exists and is Bound or Pending", "verificationScriptFile": "q12_s2_validate_pvc_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Deployment exists", "verificationScriptFile": "q12_s3_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "13",
+      "namespace": "ckad-q13",
+      "machineHostname": "ckad9999",
+      "question": "Create StorageClass `moon-retain` (provisioner `moon-retainer`, reclaimPolicy `Retain`). Create PVC `moon-pvc-126` (3Gi, RWO, uses `moon-retain`) in `ckad-q13`. Since the provisioner does not exist, PVC should stay Pending. Write the PVC event message to `/opt/course/exam3/q13/pvc-126-reason`.",
+      "verification": [
+        {"id": "1", "description": "StorageClass exists", "verificationScriptFile": "q13_s1_validate_sc_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "PVC exists in Pending", "verificationScriptFile": "q13_s2_validate_pvc_pending.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "Reason file exists", "verificationScriptFile": "q13_s3_validate_reason_file.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "14",
+      "namespace": "ckad-q14",
+      "machineHostname": "ckad9999",
+      "question": "In Namespace `ckad-q14`, create Secret `secret1` (user=`test`, pass=`pwd`) and make it available in Pod `secret-handler` as env vars `SECRET1_USER` and `SECRET1_PASS`. Also create ConfigMap `secret2` and mount it at `/tmp/secret2` in the same Pod. Save updated YAML to `/opt/course/exam3/q14/secret-handler-new.yaml`.",
+      "verification": [
+        {"id": "1", "description": "Secret exists", "verificationScriptFile": "q14_s1_validate_secret_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Pod env vars from secret are configured", "verificationScriptFile": "q14_s2_validate_pod_env.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "ConfigMap mounted at /tmp/secret2", "verificationScriptFile": "q14_s3_validate_pod_mount.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "Updated YAML file exists", "verificationScriptFile": "q14_s4_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "15",
+      "namespace": "ckad-q15",
+      "machineHostname": "ckad9999",
+      "question": "For Deployment `web-moon` in `ckad-q15`, create ConfigMap `configmap-web-moon-html` whose data contains key `index.html` with content from `/opt/course/exam3/q15/web-moon.html`. Save the ConfigMap definition to `/opt/course/exam3/q15/configmap.yaml`.",
+      "verification": [
+        {"id": "1", "description": "ConfigMap exists", "verificationScriptFile": "q15_s1_validate_configmap_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "ConfigMap YAML saved", "verificationScriptFile": "q15_s2_validate_configmap_yaml_file.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "16",
+      "namespace": "ckad-q16",
+      "machineHostname": "ckad9999",
+      "question": "Add a sidecar `logger-con` (image `busybox:1.31.0`) to Deployment `cleaner` in `ckad-q16` reading the same volume and executing `tail -f /var/log/cleaner/cleaner.log`. Save updated Deployment to `/opt/course/exam3/q16/cleaner-new.yaml` and ensure Deployment is running.",
+      "verification": [
+        {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q16_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q16_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "17",
+      "namespace": "ckad-q17",
+      "machineHostname": "ckad9999",
+      "question": "Add an InitContainer `init-con` (image `busybox:1.31.0`) to Deployment defined at `/opt/course/exam3/q17/test-init-container.yaml` that writes `index.html` with content `check this out!` into the shared volume. Save to `/opt/course/exam3/q17/test-init-container-new.yaml` and verify via curl.",
+      "verification": [
+        {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q17_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q17_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "18",
+      "namespace": "ckad-q18",
+      "machineHostname": "ckad9999",
+      "question": "Fix the misconfiguration in Namespace `ckad-q18` where Service `manager-api-svc` should expose Deployment `manager-api-deployment` but has no endpoints. After fixing selector/ports, the Service should have endpoints.",
+      "verification": [
+        {"id": "1", "description": "Service has endpoints", "verificationScriptFile": "q18_s2_validate_service_endpoints.sh", "expectedOutput": "0", "weightage": 4}
+      ]
+    },
+    {
+      "id": "19",
+      "namespace": "ckad-q19",
+      "machineHostname": "ckad9999",
+      "question": "In Namespace `ckad-q19`, change Service `jupiter-crew-svc` from `ClusterIP` to `NodePort` and set `nodePort=30100`. Verify reachability inside cluster (single-node clusters reachable on that node).",
+      "verification": [
+        {"id": "1", "description": "Service type is NodePort", "verificationScriptFile": "q19_s1_validate_service_type.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Service nodePort is 30100", "verificationScriptFile": "q19_s2_validate_service_nodeport.sh", "expectedOutput": "0", "weightage": 2}
+      ]
+    },
+    {
+      "id": "20",
+      "namespace": "ckad-p1",
+      "machineHostname": "ckad9999",
+      "question": "Add a liveness probe (TCP 80, initialDelay=10s, period=15s) to Deployment `project-23-api` in `ckad-p1`. Save to `/opt/course/exam3/p1/project-23-api-new.yaml` and apply.",
+      "verification": [
+        {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q20_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q20_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "21",
+      "namespace": "ckad-p2",
+      "machineHostname": "ckad9999",
+      "question": "Create Deployment `sunny` with `replicas=4` using image `nginx:1.17.3-alpine` in `ckad-p2` and set `serviceAccountName=sa-sun-deploy`. Expose it via ClusterIP Service `sun-srv` on port 9999. Write a kubectl command to `/opt/course/exam3/p2/sunny_status_command.sh` that checks all Pods are running.",
+      "verification": [
+        {"id": "1", "description": "Deployment exists with 4 replicas", "verificationScriptFile": "q21_s1_validate_deployment_and_replicas.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Service exists", "verificationScriptFile": "q21_s2_validate_service_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Status command file exists", "verificationScriptFile": "q21_s3_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    },
+    {
+      "id": "22",
+      "namespace": "ckad-p3",
+      "machineHostname": "ckad9999",
+      "question": "Fix the readinessProbe port in Deployment `earth-3cc-web` in `ckad-p3` so that Pods become ready and Service `earth-3cc-web-svc` has endpoints. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.",
+      "verification": [
+        {"id": "1", "description": "Deployment shows all replicas ready", "verificationScriptFile": "q22_s1_validate_deployment_ready.sh", "expectedOutput": "0", "weightage": 3},
+        {"id": "2", "description": "Ticket description file exists", "verificationScriptFile": "q22_s2_validate_ticket_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+      ]
+    }
+  ]
+}
