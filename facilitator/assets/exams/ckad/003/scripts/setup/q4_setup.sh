@@ -39,11 +39,10 @@ if command -v helm >/dev/null 2>&1; then
     helm ls -A 2>/dev/null | awk -v rel="$PENDING_REL" 'NR>1 && $1==rel {print $2, $1}' | while read ns rel; do helm -n "$ns" uninstall "$rel" >/dev/null 2>&1 || true; done
   fi
   # Start a long-wait install with invalid image so it remains pending
+  # Use nohup to survive parent shell exit so status stays pending-install
   if ! helm ls -A 2>/dev/null | awk 'NR>1{print $1}' | grep -qx "$PENDING_REL"; then
-    (
-      helm -n "$STUCK_NS" upgrade --install "$PENDING_REL" bitnami/nginx \
-        --set image.repository=ghcr.io/ckx/this-will-never-exist \
-        --wait --timeout 24h >/dev/null 2>&1 || true
-    ) &
+    nohup helm -n "$STUCK_NS" upgrade --install "$PENDING_REL" bitnami/nginx \
+      --set image.repository=ghcr.io/ckx/this-will-never-exist \
+      --wait --timeout 24h >/tmp/q4_pending_helm.log 2>&1 & disown || true
   fi
 fi
