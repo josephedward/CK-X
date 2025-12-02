@@ -10,16 +10,21 @@ if [[ -z "$answers_path" ]]; then
   echo "answers key missing in $cfg" >&2
   exit 1
 fi
-# First try path relative to repo root (as used in container)
-full_path="$root_dir/$answers_path"
-alt_full_path="$root_dir/facilitator/$answers_path"
-if [[ -f "$full_path" ]]; then
-  echo "[OK] $answers_path"
-  exit 0
-elif [[ -f "$alt_full_path" ]]; then
-  echo "[OK] facilitator/$answers_path"
-  exit 0
-else
-  echo "Missing answers file: $answers_path (checked: $full_path and $alt_full_path)" >&2
-  exit 1
-fi
+
+base_dir="$(dirname "$cfg")"
+candidates=(
+  "$base_dir/$answers_path"
+  "$root_dir/$answers_path"
+  "$root_dir/facilitator/$answers_path"
+)
+
+for p in "${candidates[@]}"; do
+  if [[ -f "$p" ]]; then
+    rel="${p#$root_dir/}"
+    echo "[OK] $rel"
+    exit 0
+  fi
+done
+
+echo "Missing answers file: $answers_path (checked candidates: ${candidates[*]})" >&2
+exit 1

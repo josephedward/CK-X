@@ -17,6 +17,8 @@ const MetricService = require('./metricService');
  * @returns {Promise<Object>} Result object with success status and data
  */
 async function createExam(examData) {
+  // Add this line for debugging
+  console.log('--- DEBUG: examData received in createExam ---', JSON.stringify(examData, null, 2));
   try {
     // Check if there's already an active exam
     const currentExamId = await redisClient.getCurrentExamId();
@@ -48,7 +50,12 @@ async function createExam(examData) {
       };
     }
 
-    const answersFullPath = path.join(process.cwd(), examData.assetPath, examData.config.answers);
+    // Resolve answers path. Support three forms:
+    // 1) Relative to assetPath (e.g., "answers.md")
+    // 2) Repo-relative inside container (e.g., "assets/exams/.../answers.md" or "facilitator/assets/...")
+    // 3) Absolute inside container (rare)
+    const answersPathCfg = examData.config.answers;
+    let answersFullPath = path.join(process.cwd(), 'facilitator', examData.assetPath, answersPathCfg);
     if (!fs.existsSync(answersFullPath)) {
       logger.error(`Answers file not found at path: ${answersFullPath}`);
       return {
@@ -464,4 +471,3 @@ module.exports = {
   endExam,
   getExamResult
 };
-

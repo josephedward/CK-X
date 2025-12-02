@@ -40,7 +40,7 @@ if ! [[ "$NUMBER_OF_NODES" =~ ^[0-9]+$ ]]; then
 fi
 
 # Clean up any existing cluster and set up a fresh one with fixed API port
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null candidate@k8s-api-server "env-cleanup $CLUSTER_NAME || true"
+# ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null candidate@k8s-api-server "env-cleanup $CLUSTER_NAME || true"
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null candidate@k8s-api-server "API_PORT=6443 env-setup $NUMBER_OF_NODES $CLUSTER_NAME"
 
 #Pull assets from URL

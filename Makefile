@@ -19,6 +19,7 @@ help:
 
 .PHONY: up
 up:
+	bash scripts/guard_arm64.sh
 	$(COMPOSE) up -d
 
 .PHONY: down

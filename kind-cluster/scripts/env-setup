@@ -59,7 +59,7 @@ ports:
     nodeFilters:
       - loadbalancer
 kubeAPI:
-  host: "127.0.0.1"
+  host: "0.0.0.0"
   hostPort: "$API_PORT"
 options:
   k3s:
