@@ -166,6 +166,7 @@ services:
   # Redis Database for Facilitator
   redis:
     image: redis:alpine
+    platform: ${CKX_PLATFORM:-}
     hostname: redis
     command: ["redis-server", "--appendonly", "yes"]
     expose:
