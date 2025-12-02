@@ -15,6 +15,7 @@ help:
 	@echo "  make check-answers   # Verify answers.md paths exist"
  
 	@echo "  make test            # Run repository tests"
+	@echo "  make release-exam3   # Build/push exam3 images (disabled)"
 
 .PHONY: up
 up:
@@ -47,6 +48,11 @@ check-answers:
 .PHONY: build-and-push
 build-and-push:
 	@echo "Build/push disabled. Use prebuilt images via .env (CKX_IMAGE_NS/CKX_VERSION)."
+
+# Keep target for docs compatibility; delegates to build-and-push (no-op)
+.PHONY: release-exam3
+release-exam3: build-and-push
+	@echo "release-exam3 finished (no-op). To use prebuilt images, set CKX_IMAGE_NS/CKX_VERSION in .env and run 'make up'."
 
 .PHONY: test
 test:

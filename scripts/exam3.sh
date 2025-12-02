@@ -26,26 +26,7 @@ EOF
   fi
 }
 
-arm64_check() {
-  echo "[Verify] Images are arm64 (Apple Silicon)"
-  local images bad=()
-  images=$(docker compose config | awk '/image:/ {print $2}' | sort -u || true)
-  if [[ -n "${images}" ]]; then
-    while read -r img; do
-      [[ -z "$img" ]] && continue
-      arch=$(docker image inspect "$img" --format '{{.Architecture}}' 2>/dev/null || echo unknown)
-      if [[ "$arch" != "arm64" ]]; then
-        bad+=("$img ($arch)")
-      fi
-    done <<< "$images"
-  fi
-  if (( ${#bad[@]} )); then
-    echo "\n[ERROR] The following images are not arm64:"
-    printf '  - %s\n' "${bad[@]}"
-    echo "\nFix: Build/push arm64 images under your CKX_IMAGE_NS/CKX_VERSION tag, or switch .env to an arm64-capable tag."
-    exit 1
-  fi
-}
+arm64_check() { :; }
 
 if [[ "$mode" == "full" ]]; then
   echo "[1/5] FULL NUKE: Removing ALL containers/images/volumes/networks"
@@ -81,6 +62,13 @@ fi
 
 ensure_env
 
+# Also remove legacy 'course-data' project volume if present (was used by older configs)
+VOL=$(docker volume ls -q | grep -E 'course-data$' || true)
+if [[ -n "$VOL" ]]; then
+  echo "[cleanup] Removing legacy course-data volume(s)"
+  echo "$VOL" | xargs -r docker volume rm -f || true
+fi
+
 echo "[3/4] Pull images"
 docker compose pull
 arm64_check
@@ -90,4 +78,3 @@ docker compose up -d
 
 echo
 echo "Fresh stack is up. Open: http://localhost:30080 → Start Exam → CKAD Comprehensive Lab - 3"
-

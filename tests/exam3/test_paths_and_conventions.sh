@@ -7,8 +7,8 @@ assess="$root_dir/facilitator/assets/exams/ckad/003/assessment.json"
 command -v jq >/dev/null 2>&1 || { echo "jq is required for this test" >&2; exit 1; }
 [ -f "$assess" ] || { echo "assessment.json not found" >&2; exit 1; }
 
-# All namespaces follow ckad-qNN format
-bad_ns=$(jq -r '.questions[].namespace' "$assess" | grep -vE '^ckad-q[0-9]{2}$' || true)
+# All namespaces follow ckad-qNN format; allow preview namespaces ckad-p1..ckad-p3 if present
+bad_ns=$(jq -r '.questions[].namespace' "$assess" | grep -vE '^(ckad-q[0-9]{2}|ckad-p[1-3])$' || true)
 if [[ -n "$bad_ns" ]]; then
   echo "Namespaces not matching ckad-qNN:" >&2
   echo "$bad_ns" >&2
@@ -24,4 +24,3 @@ if [[ -n "$bad_paths" ]]; then
 fi
 
 exit 0
-

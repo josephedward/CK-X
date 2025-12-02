@@ -1,7 +1,7 @@
 {
   "lab": "cka-001",
   "workerNodes": 1,
-  "answers": "assets/exams/cka/001/answers.md",
+  "answers": "facilitator/assets/exams/cka/001/answers.md",
   "questions": "assessment.json",
   "totalMarks": 100,
   "lowScore": 40,

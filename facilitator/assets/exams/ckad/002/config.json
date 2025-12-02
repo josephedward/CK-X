@@ -1,7 +1,7 @@
 {
     "lab": "ckad-002",
     "workerNodes": 1,
-    "answers": "assets/exams/ckad/002/answers.md",
+    "answers": "facilitator/assets/exams/ckad/002/answers.md",
     "questions": "assessment.json",
     "totalMarks": 100,
     "lowScore": 50,

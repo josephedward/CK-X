@@ -2,7 +2,7 @@ services:
   # VNC Server (Ubuntu)
   remote-desktop:
     image: ${CKX_IMAGE_NS:-je01}/ckx-remote-desktop:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    platform: ${CKX_PLATFORM:-}
     hostname: terminal
     expose:
       - "5901" # VNC port (internal only)
@@ -32,7 +32,7 @@ services:
   # Web Application (not directly exposed to users)
   webapp:
     image: ${CKX_IMAGE_NS:-je01}/ckx-webapp:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    platform: ${CKX_PLATFORM:-}
     expose:
       - "3000" # Only exposed to internal network
     environment:
@@ -62,7 +62,7 @@ services:
   # Nginx Reverse Proxy - ONLY SERVICE EXPOSED TO USERS
   nginx:
     image: ${CKX_IMAGE_NS:-je01}/ckx-nginx:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    platform: ${CKX_PLATFORM:-}
     depends_on:
       - webapp
       - remote-desktop
@@ -89,7 +89,7 @@ services:
   # Jump Host (ckad9999 and ckad9988)
   jumphost:
     image: ${CKX_IMAGE_NS:-je01}/ckx-jumphost:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    platform: ${CKX_PLATFORM:-}
     hostname: ckad9999
     privileged: true
     # No external port mappings - only accessible internally
@@ -112,12 +112,12 @@ services:
       timeout: 5s
       retries: 3
 
-  # Remote Terminal Service removed; use jumphost for SSH
+  # Remote Terminal removed; WebApp SSH points to jumphost
 
   # KIND Kubernetes Cluster
   k8s-api-server: # Service name that will be used for DNS resolution
     image: ${CKX_IMAGE_NS:-je01}/ckx-cluster:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    platform: ${CKX_PLATFORM:-}
     container_name: kind-cluster
     hostname: k8s-api-server
     privileged: true # Required for running containers inside KIND
@@ -171,8 +171,8 @@ services:
 
   # Facilitator Service
   facilitator:
-    image: ${CKX_IMAGE_NS:-je01}/ckx-facilitator:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
+    image: ckx-facilitator-local:latest
+    platform: ${CKX_PLATFORM:-}
     hostname: facilitator
     expose:
       - "3000"

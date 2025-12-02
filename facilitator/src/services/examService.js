@@ -37,6 +37,27 @@ async function createExam(examData) {
     // fetch exam config from the asset path and append it to the examData
     const examConfig = fs.readFileSync(path.join(process.cwd(),  examData.assetPath, 'config.json'), 'utf8');
     examData.config = JSON.parse(examConfig);
+
+    // Validate that answers are present and readable before proceeding
+    if (!examData.config || !examData.config.answers) {
+      logger.error('Answers path not defined in exam configuration');
+      return {
+        success: false,
+        error: 'Configuration Error',
+        message: 'Answers path not defined in exam configuration'
+      };
+    }
+
+    const answersFullPath = path.join(process.cwd(), examData.assetPath, examData.config.answers);
+    if (!fs.existsSync(answersFullPath)) {
+      logger.error(`Answers file not found at path: ${answersFullPath}`);
+      return {
+        success: false,
+        error: 'File Not Found',
+        message: 'Exam answers file not found'
+      };
+    }
+
     delete examData.answers;
 
     //persist created at time
@@ -442,24 +463,5 @@ module.exports = {
   evaluateExam,
   endExam,
   getExamResult
-}; 
-    // Validate that answers are present and readable before proceeding
-    if (!examData.config || !examData.config.answers) {
-      logger.error('Answers path not defined in exam configuration');
-      return {
-        success: false,
-        error: 'Configuration Error',
-        message: 'Answers path not defined in exam configuration'
-      };
-    }
+};
 
-    const answersFullPath = path.join(process.cwd(), examData.config.answers);
-    if (!fs.existsSync(answersFullPath)) {
-      logger.error(`Answers file not found at path: ${answersFullPath}`);
-      return {
-        success: false,
-        error: 'File Not Found',
-        message: 'Exam answers file not found'
-      };
-    }
-    

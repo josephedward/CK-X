@@ -685,16 +685,22 @@ document.addEventListener('DOMContentLoaded', function() {
         setupUIEventListeners();
 
         // Initialize panel resizer AFTER all UI elements are set up
-        window.panelResizer = new PanelResizer({
-            dividerId: 'panelDivider',
-            leftPanelId: 'questionPanel',
-            rightPanelId: 'vncPanel',
-            containerId: 'mainContainer',
-            minLeftWidth: 200, // Minimum width for question panel
-            minRightWidth: 300, // Minimum width for VNC panel
-            storageKey: 'examPanelWidth',
-            debug: true // Enable debug for troubleshooting
-        });
+        let panelResizerInstance;
+        try {
+            panelResizerInstance = new PanelResizer({
+                dividerId: 'panelDivider',
+                leftPanelId: 'questionPanel',
+                rightPanelId: 'vncPanel',
+                containerId: 'mainContainer',
+                minLeftWidth: 200, // Minimum width for question panel
+                minRightWidth: 300, // Minimum width for VNC panel
+                storageKey: 'examPanelWidth',
+                debug: true // Enable debug for troubleshooting
+            });
+            window.panelResizer = panelResizerInstance;
+        } catch (err) {
+            console.warn('PanelResizer failed to initialize:', err);
+        }
         
         // Setup clipboard copy for inline code elements
         ClipboardService.setupInlineCodeCopy();

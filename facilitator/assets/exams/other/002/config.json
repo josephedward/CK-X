@@ -1,7 +1,7 @@
 {
   "lab": "helm-001",
   "workerNodes": 1,
-  "answers": "assets/exams/other/002/answers.md",
+  "answers": "facilitator/assets/exams/other/002/answers.md",
   "questions": "assessment.json",
   "totalMarks": 100,
   "lowScore": 40,
