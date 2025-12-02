@@ -11,12 +11,9 @@ function processQuestionContent(content) {
     // 1) Style inline code delimited by backticks: `code`
     processedContent = processedContent.replace(/`([^`]+)`/g, '<span class="inline-code">$1</span>');
 
-    // 2) Style inline code delimited by single quotes: 'code'
-    processedContent = processedContent.replace(/'([^'<>]+)'/g, '<span class="inline-code">$1</span>');
-
-    // 2a) Style inline code delimited by double quotes in prose (avoid HTML attributes)
-    // Match a leading whitespace or '>' before the quote to avoid attribute contexts like class="..."
-    processedContent = processedContent.replace(/(^|[\s>])"([^"<>\n]+)"/g, (m, pre, inner) => `${pre}<span class="inline-code">${inner}</span>`);
+    // Note: We intentionally do NOT style single- or double-quoted text to avoid
+    // interfering with HTML attributes (e.g., class="inline-code"). Backticks are the
+    // supported way to mark inline code in question content.
 
     // 3) Style absolute file paths like /opt/course/exam3/q01/namespaces (avoid matching inside tags)
     processedContent = processedContent.replace(/(^|\s)(\/(?:opt|etc|var|home|tmp|root|usr)(?:\/[A-Za-z0-9._-]+)+)/g,
