@@ -288,11 +288,11 @@ kubectl -n ckad-q13 describe pvc moon-pvc-126 | sed -n '/Events/,$p' > /opt/cour
 
 **Answer:**
 ```bash
-kubectl create ns ckad-q14 || true
-kubectl -n ckad-q14 create secret generic secret1 --from-literal=user=test --from-literal=pass=pwd
-kubectl -n ckad-q14 create configmap secret2 --from-literal=example=ok
+kubectl create ns secrets-cm || true
+kubectl -n secrets-cm create secret generic secret1 --from-literal=user=test --from-literal=pass=pwd
+kubectl -n secrets-cm create configmap secret2 --from-literal=example=ok
 # Edit the existing pod to include envFrom/volumes then save:
-kubectl -n ckad-q14 get pod secret-handler -o yaml > /opt/course/exam3/q14/secret-handler-new.yaml
+kubectl -n secrets-cm get pod secret-handler -o yaml > /opt/course/exam3/q14/secret-handler-new.yaml
 # Edit file to add:
 # env:
 # - name: SECRET1_USER
@@ -307,18 +307,18 @@ kubectl -n ckad-q14 get pod secret-handler -o yaml > /opt/course/exam3/q14/secre
 ```
 
 ## Question 15
-**Question:** For Deployment `web-moon` in `ckad-q15`, create ConfigMap `configmap-web-moon-html` whose data contains key `index.html` with content from `/opt/course/exam3/q15/web-moon.html`. Save the ConfigMap definition to `/opt/course/exam3/q15/configmap.yaml`.
+**Question:** For Deployment `web-moon` in `configmap-web`, create ConfigMap `configmap-web-moon-html` whose data contains key `index.html` with content from `/opt/course/exam3/q15/web-moon.html`. Save the ConfigMap definition to `/opt/course/exam3/q15/configmap.yaml`.
 
 **Answer:**
 ```bash
-kubectl create ns ckad-q15 || true
+kubectl create ns configmap-web || true
 mkdir -p /opt/course/exam3/q15
 cat > /opt/course/exam3/q15/configmap.yaml <<'EOF'
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: configmap-web-moon-html
-  namespace: ckad-q15
+  namespace: configmap-web
 data:
   index.html: |
 EOF
@@ -327,11 +327,11 @@ kubectl apply -f /opt/course/exam3/q15/configmap.yaml
 ```
 
 ## Question 16
-**Question:** Add a sidecar `logger-con` (image `busybox:1.31.0`) to Deployment `cleaner` in `ckad-q16` reading the same volume and executing `tail -f /var/log/cleaner/cleaner.log`. Save updated Deployment to `/opt/course/exam3/q16/cleaner-new.yaml` and ensure Deployment is running.
+**Question:** Add a sidecar `logger-con` (image `busybox:1.31.0`) to Deployment `cleaner` in `sidecar-logging` reading the same volume and executing `tail -f /var/log/cleaner/cleaner.log`. Save updated Deployment to `/opt/course/exam3/q16/cleaner-new.yaml` and ensure Deployment is running.
 
 **Answer:**
 ```bash
-kubectl create ns ckad-q16 || true
+kubectl create ns sidecar-logging || true
 # Edit the deployment from cleaner.yaml and add sidecar that tails the file, then save to cleaner-new.yaml
 ```
 
@@ -345,25 +345,25 @@ kubectl apply -f /opt/course/exam3/q17/test-init-container-new.yaml
 ```
 
 ## Question 18
-**Question:** Fix the misconfiguration in Namespace `ckad-q18` where Service `manager-api-svc` should expose Deployment `manager-api-deployment` but has no endpoints. After fixing selector/ports, the Service should have endpoints.
+**Question:** Fix the misconfiguration in Namespace `svc-fix-endpoints` where Service `manager-api-svc` should expose Deployment `manager-api-deployment` but has no endpoints. After fixing selector/ports, the Service should have endpoints.
 
 **Answer:**
 ```bash
-kubectl -n ckad-q18 get svc manager-api-svc -o yaml
-kubectl -n ckad-q18 get deploy manager-api-deployment -o yaml
+kubectl -n svc-fix-endpoints get svc manager-api-svc -o yaml
+kubectl -n svc-fix-endpoints get deploy manager-api-deployment -o yaml
 # Fix selector/ports so service selects pods correctly and targetPort matches containerPort
 ```
 
 ## Question 19
-**Question:** In Namespace `ckad-q19`, change Service `jupiter-crew-svc` from `ClusterIP` to `NodePort` and set `nodePort=30100`. Verify reachability inside cluster (single-node clusters reachable on that node).
+**Question:** In Namespace `nodeport-30100`, change Service `jupiter-crew-svc` from `ClusterIP` to `NodePort` and set `nodePort=30100`. Verify reachability inside cluster (single-node clusters reachable on that node).
 
 **Answer:**
 ```bash
-kubectl -n ckad-q19 patch svc jupiter-crew-svc -p '{"spec":{"type":"NodePort","ports":[{"port":80,"targetPort":80,"nodePort":30100}]}}'
+kubectl -n nodeport-30100 patch svc jupiter-crew-svc -p '{"spec":{"type":"NodePort","ports":[{"port":80,"targetPort":80,"nodePort":30100}]}}'
 ```
 
 ## Preview P1 (Q20)
-**Question:** Add a liveness probe (TCP 80, initialDelay=10s, period=15s) to Deployment `project-23-api` in `ckad-p1`. Save to `/opt/course/exam3/p1/project-23-api-new.yaml` and apply.
+**Question:** Add a liveness probe (TCP 80, initialDelay=10s, period=15s) to Deployment `project-23-api` in `p1-liveness`. Save to `/opt/course/exam3/p1/project-23-api-new.yaml` and apply.
 
 **Answer:**
 ```bash
@@ -372,20 +372,20 @@ kubectl apply -f /opt/course/exam3/p1/project-23-api-new.yaml
 ```
 
 ## Preview P2 (Q21)
-**Question:** Create Deployment `sunny` with `replicas=4` using image `nginx:1.17.3-alpine` in `ckad-p2` and set `serviceAccountName=sa-sun-deploy`. Expose it via ClusterIP Service `sun-srv` on port 9999. Write a kubectl command to `/opt/course/exam3/p2/sunny_status_command.sh` that checks all Pods are running.
+**Question:** Create Deployment `sunny` with `replicas=4` using image `nginx:1.17.3-alpine` in `p2-deploy-svc` and set `serviceAccountName=sa-sun-deploy`. Expose it via ClusterIP Service `sun-srv` on port 9999. Write a kubectl command to `/opt/course/exam3/p2/sunny_status_command.sh` that checks all Pods are running.
 
 **Answer:**
 ```bash
-kubectl create ns ckad-p2 || true
-kubectl -n ckad-p2 create deploy sunny --image=nginx:1.17.3-alpine --replicas=4 --dry-run=client -o yaml \
+kubectl create ns p2-deploy-svc || true
+kubectl -n p2-deploy-svc create deploy sunny --image=nginx:1.17.3-alpine --replicas=4 --dry-run=client -o yaml \
  | yq '.spec.template.spec.serviceAccountName = "sa-sun-deploy"' | kubectl apply -f -
-kubectl -n ckad-p2 expose deploy sunny --name=sun-srv --type=ClusterIP --port=9999 --target-port=80
+kubectl -n p2-deploy-svc expose deploy sunny --name=sun-srv --type=ClusterIP --port=9999 --target-port=80
 mkdir -p /opt/course/exam3/p2
-echo "kubectl -n ckad-p2 get pods -l app=sunny" > /opt/course/exam3/p2/sunny_status_command.sh
+echo "kubectl -n p2-deploy-svc get pods -l app=sunny" > /opt/course/exam3/p2/sunny_status_command.sh
 ```
 
 ## Preview P3 (Q22)
-**Question:** Fix the readinessProbe port in Deployment `earth-3cc-web` in `ckad-p3` so that Pods become ready and Service `earth-3cc-web-svc` has aget deployment ready state. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.
+**Question:** Fix the readinessProbe port in Deployment `earth-3cc-web` in `p3-readiness` so that Pods become ready and Service `earth-3cc-web-svc` has aget deployment ready state. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.
 
 **Answer:**
 ```bash
