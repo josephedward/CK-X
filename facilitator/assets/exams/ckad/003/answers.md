@@ -272,7 +272,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: moon-pvc-126
-  namespace: ckad-q13
+  namespace: pvc-pending
 spec:
   accessModes: ["ReadWriteOnce"]
   resources:
@@ -280,11 +280,11 @@ spec:
       storage: 3Gi
   storageClassName: moon-retain
 EOF
-kubectl -n ckad-q13 describe pvc moon-pvc-126 | sed -n '/Events/,$p' > /opt/course/exam3/q13/pvc-126-reason
+kubectl -n pvc-pending describe pvc moon-pvc-126 | sed -n '/Events/,$p' > /opt/course/exam3/q13/pvc-126-reason
 ```
 
 ## Question 14
-**Question:** In Namespace `ckad-q14`, create Secret `secret1` (user=`test`, pass=`pwd`) and make it available in Pod `secret-handler` as env vars `SECRET1_USER` and `SECRET1_PASS`. Also create ConfigMap `secret2` and mount it at `/tmp/secret2` in the same Pod. Save updated YAML to `/opt/course/exam3/q14/secret-handler-new.yaml`.
+**Question:** In Namespace `secrets-cm`, create Secret `secret1` (user=`test`, pass=`pwd`) and make it available in Pod `secret-handler` as env vars `SECRET1_USER` and `SECRET1_PASS`. Also create ConfigMap `secret2` and mount it at `/tmp/secret2` in the same Pod. Save updated YAML to `/opt/course/exam3/q14/secret-handler-new.yaml`.
 
 **Answer:**
 ```bash
