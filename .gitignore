@@ -61,3 +61,7 @@ coverage/
 terraform.tfstate
 terraform.tfstate.backup
 .terragrunt-cache/ 
+/misc
+AGENTS.md
+docs/documentation_and_structure_review.md
+GEMINI.md
