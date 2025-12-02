@@ -34,4 +34,12 @@ kubectl -n rollout rollout status deployment/api-new-c32 --timeout=60s
 # This creates a broken state that the user must roll back from.
 kubectl -n rollout set image deploy/api-new-c32 api=nginx:does-not-exist --record=true || true
 
+# Ensure the bad image is actually set on the deployment template (idempotent)
+current_img=$(kubectl -n rollout get deploy api-new-c32 -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "")
+if [[ "$current_img" != *":does-not-exist" ]]; then
+  kubectl -n rollout patch deploy/api-new-c32 \
+    --type='json' \
+    -p='[{"op":"replace","path":"/spec/template/spec/containers/0/image","value":"nginx:does-not-exist"}]' >/dev/null 2>&1 || true
+fi
+
 mkdir -p /opt/course/exam3/q08
