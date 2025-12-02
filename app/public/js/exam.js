@@ -539,6 +539,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
+    function renderVerificationChecklist(question) {
+        const ver = (question.originalData && Array.isArray(question.originalData.verification)) ? question.originalData.verification : [];
+        if (!ver.length) return '';
+        const items = ver.map(v => `<li>${(v.description||'').trim()}</li>`).join('');
+        return `
+            <div class="mt-3">
+                <h6 class="mb-2">Verification Checklist</h6>
+                <ul class="mb-0">${items}</ul>
+            </div>
+        `;
+    }
+
     // Update question content
     function updateQuestionContent(questionId) {
         const question = questions.find(q => q.id === questionId || q.id === questionId.toString());
@@ -560,8 +572,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Get formatted content from QuestionService
                     const formattedContent = QuestionService.generateQuestionContent(question);
                     
-                    // Update content
-                    questionContent.innerHTML = formattedContent;
+                    // Update content + show verification checklist for clarity
+                    questionContent.innerHTML = formattedContent + renderVerificationChecklist(question);
                     
                     // Hide action buttons in completed exam review mode
                     if (isCompletedExamMode) {
