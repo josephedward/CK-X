@@ -39,7 +39,7 @@ services:
       - VNC_SERVICE_HOST=remote-desktop
       - VNC_SERVICE_PORT=6901
       - VNC_PASSWORD=bakku-the-wizard
-      - SSH_HOST=remote-terminal
+      - SSH_HOST=jumphost
       - SSH_PORT=22
       - SSH_USER=candidate
       - SSH_PASSWORD=password
@@ -66,7 +66,6 @@ services:
     depends_on:
       - webapp
       - remote-desktop
-      - remote-terminal
       - facilitator
       - k8s-api-server
     ports:
@@ -98,7 +97,6 @@ services:
       - "22" # SSH port (internal only)
     volumes:
       - kube-config:/home/candidate/.kube # Shared volume for Kubernetes config
-      - course-data:/opt/course # Shared course data for file-based tasks
     deploy:
       resources:
         limits:
@@ -114,33 +112,7 @@ services:
       timeout: 5s
       retries: 3
 
-  # Remote Terminal Service
-  remote-terminal:
-    image: ${CKX_IMAGE_NS:-je01}/ckx-remote-terminal:${CKX_VERSION:-exam3-v2}
-    platform: linux/arm64
-    hostname: remote-terminal
-    expose:
-      - "22" # SSH port (internal only)
-    environment:
-      - KUBECONFIG=/home/candidate/.kube/kubeconfig
-    volumes:
-      - course-data:/opt/course # Shared course data for file-based tasks
-      - kube-config:/home/candidate/.kube # Shared kubeconfig for kubectl
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
-        reservations:
-          cpus: "0.2"
-          memory: 256M
-    networks:
-      - ckx-network
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "22"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+  # Remote Terminal Service removed; use jumphost for SSH
 
   # KIND Kubernetes Cluster
   k8s-api-server: # Service name that will be used for DNS resolution
@@ -240,7 +212,5 @@ networks:
     driver: bridge
 
 volumes:
-  course-data:
-    name: ${CKX_COURSE_VOLUME:-ckx-course-data}
   kube-config: # Shared volume for Kubernetes configuration
     name: ${CKX_KUBECONFIG_VOLUME:-ckx-kube-config}
