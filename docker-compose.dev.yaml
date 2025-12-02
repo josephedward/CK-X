@@ -1,0 +1,6 @@
+services:
+  facilitator:
+    volumes:
+      # Bind-mount exam assets so changes are picked up without rebuilding
+      - ./facilitator/assets:/usr/src/app/assets:ro
+
