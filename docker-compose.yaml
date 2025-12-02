@@ -113,6 +113,24 @@ services:
       retries: 3
 
   # Remote Terminal removed; WebApp SSH points to jumphost
+  #
+  # If you need to re-enable the old remote-terminal service, use a definition
+  # like this to ensure the correct architecture is built.
+  # remote-terminal:
+  #   build:
+  #     context: ./remote-terminal
+  #   image: ${CKX_IMAGE_NS:-je01}/ckx-remote-terminal:${CKX_VERSION:-exam3-v2}
+  #   platform: ${CKX_PLATFORM:-}
+  #   hostname: ckad9988
+  #   expose:
+  #     - "22"
+  #   networks:
+  #     - ckx-network
+  #   healthcheck:
+  #     test: ["CMD", "nc", "-z", "localhost", "22"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
 
   # KIND Kubernetes Cluster
   k8s-api-server: # Service name that will be used for DNS resolution
@@ -171,7 +189,7 @@ services:
 
   # Facilitator Service
   facilitator:
-    image: ckx-facilitator-local:latest
+    image: ${CKX_IMAGE_NS:-je01}/ckx-facilitator:${CKX_VERSION:-exam3-v2}
     platform: ${CKX_PLATFORM:-}
     hostname: facilitator
     expose:

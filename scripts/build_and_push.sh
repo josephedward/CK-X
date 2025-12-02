@@ -54,7 +54,7 @@ build_push() {
   local name="$1" path="$2"
   local image="$NS/ckx-$name:$TAG"
   echo "\n==> Building $image from $path"
-  docker build -t "$image" "$path"
+  docker build --no-cache -t "$image" "$path"
   echo "Pushing $image"
   docker push "$image"
 }
