@@ -58,21 +58,16 @@ kubectl apply -f /opt/course/exam3/q03/job.yaml
 ```
 
 ## Question 4
-**Question:** Using `helm` in Namespace `ckad-q04`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install`. If `helm` is not available, focus on ensuring a Deployment named `internal-issue-report-apache` exists with `replicas=2`.
+**Question:** Using `helm` in Namespace `ckad-q04`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install` across namespaces (use `helm ls -A`).
 
 **Answer:**
 ```bash
-# If helm available
 helm repo add bitnami https://charts.bitnami.com/bitnami || true
 helm repo update
 helm -n ckad-q04 uninstall internal-issue-report-apiv1 || true
 helm -n ckad-q04 upgrade --install internal-issue-report-apiv2 bitnami/nginx
 helm -n ckad-q04 upgrade --install internal-issue-report-apache bitnami/apache --set replicaCount=2
-helm ls -A | awk '/pending-install/ {print $1, $2}' | while read ns rel; do helm -n "$ns" uninstall "$rel"; done
-
-# Degraded acceptance (no helm): ensure a deployment exists named internal-issue-report-apache with 2 replicas
-kubectl create ns ckad-q04 || true
-kubectl -n ckad-q04 create deploy internal-issue-report-apache --image=httpd:2.4.41-alpine --replicas=2 --dry-run=client -o yaml | kubectl apply -f -
+helm ls -A -o json | jq -r '.[] | select(.status == "pending-install") | "\(.namespace) \(.name)"' | while read ns rel; do helm -n "$ns" uninstall "$rel"; done
 ```
 
 ## Question 5

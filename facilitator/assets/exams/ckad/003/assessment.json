@@ -39,13 +39,12 @@
       "id": "4",
       "namespace": "ckad-q04",
       "machineHostname": "ckad9999",
-      "question": "Using `helm` in Namespace `ckad-q04`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install`. If `helm` is not available, focus on ensuring a Deployment named `internal-issue-report-apache` exists with `replicas=2`.",
+      "question": "Using `helm` in Namespace `ckad-q04`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install` across namespaces (use `helm ls -A`).",
       "verification": [
-        {"id": "1", "description": "Namespace exists", "verificationScriptFile": "q4_s1_validate_namespace.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Apache release deployed with 2 replicas (degraded check)", "verificationScriptFile": "q4_s2_validate_apache_deployment.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "3", "description": "Helm: apiv1 release deleted (if Helm available)", "verificationScriptFile": "q4_s3_validate_apiv1_deleted_if_helm.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "4", "description": "Helm: apiv2 release present (if Helm available)", "verificationScriptFile": "q4_s4_validate_apiv2_present_if_helm.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "5", "description": "Helm: no pending-install releases (if Helm available)", "verificationScriptFile": "q4_s5_validate_no_pending_install_if_helm.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "1", "description": "Helm: apache release present with replicas=2", "verificationScriptFile": "q4_s2_validate_apache_deployment.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Helm: apiv1 release deleted", "verificationScriptFile": "q4_s3_validate_apiv1_deleted_if_helm.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Helm: apiv2 release present", "verificationScriptFile": "q4_s4_validate_apiv2_present_if_helm.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Helm: no releases in pending-install", "verificationScriptFile": "q4_s5_validate_no_pending_install_if_helm.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
