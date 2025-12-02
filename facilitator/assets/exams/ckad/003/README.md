@@ -13,7 +13,7 @@ Namespaces
 - Special for Q7: `pod-move-source`, `pod-move-target`
 
 Gotchas
-- Q4 (Helm): Requires `helm`. Setup seeds releases: `internal-issue-report-apiv1` and `internal-issue-report-apiv2` in `helm`, and a third release `internal-issue-report-pending` stuck in `pending-install` in namespace `helm-stuck`. The task requires deleting `apiv1`, upgrading `apiv2`, installing a new `internal-issue-report-apache` with 2 replicas, and deleting any `pending-install` releases across namespaces (discover with `helm ls -A`). Validators require Helm; no degraded path.
+- Q4 (Helm): Requires `helm`. Setup seeds releases: `internal-issue-report-apiv1` and `internal-issue-report-apiv2` in `helm`. The task requires deleting `apiv1`, upgrading `apiv2`, and installing a new `internal-issue-report-apache` with 2 replicas. Validators require Helm; no degraded path.
 - Q11 (Docker/Podman): If not available, validators accept a logs file at `/opt/course/exam3/q11/logs` containing the marker `SUN_CIPHER_ID`.
 - Q12/13 (Storage): PVC may stay `Pending` without a matching provisioner; validators account for this.
 - Q18 (Service): Setup is intentionally broken (wrong selector and wrong targetPort). Validators require both endpoints to exist and the endpoint port to be 4444 after the fix.

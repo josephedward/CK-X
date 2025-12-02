@@ -58,7 +58,7 @@ kubectl apply -f /opt/course/exam3/q03/job.yaml
 ```
 
 ## Question 4
-**Question:** Using `helm` in Namespace `helm`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install` across namespaces (use `helm ls -A`).
+**Question:** Using `helm` in Namespace `helm`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, and install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values.
 
 **Answer:**
 ```bash
@@ -67,7 +67,7 @@ helm repo update
 helm -n helm uninstall internal-issue-report-apiv1 || true
 helm -n helm upgrade --install internal-issue-report-apiv2 bitnami/nginx
 helm -n helm upgrade --install internal-issue-report-apache bitnami/apache --set replicaCount=2
-helm ls -A -o json | jq -r '.[] | select(.status == "pending-install") | "\(.namespace) \(.name)"' | while read ns rel; do helm -n "$ns" uninstall "$rel"; done
+
 ```
 
 ## Question 5

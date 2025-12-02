@@ -39,12 +39,11 @@
       "id": "4",
       "namespace": "helm",
       "machineHostname": "ckad9999",
-      "question": "Using `helm` in Namespace `helm`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values, and delete any releases stuck in `pending-install` across namespaces (use `helm ls -A`).",
+      "question": "Using `helm` in Namespace `helm`: delete release `internal-issue-report-apiv1`, upgrade release `internal-issue-report-apiv2` to any newer `bitnami/nginx`, and install a new release `internal-issue-report-apache` from `bitnami/apache` with `replicas=2` via values.",
       "verification": [
         {"id": "1", "description": "Helm: apache release present with replicas=2", "verificationScriptFile": "q4_s2_validate_apache_deployment.sh", "expectedOutput": "0", "weightage": 2},
         {"id": "2", "description": "Helm: apiv1 release deleted", "verificationScriptFile": "q4_s3_validate_apiv1_deleted_if_helm.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Helm: apiv2 release present", "verificationScriptFile": "q4_s4_validate_apiv2_present_if_helm.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "4", "description": "Helm: no releases in pending-install", "verificationScriptFile": "q4_s5_validate_no_pending_install_if_helm.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "3", "description": "Helm: apiv2 release upgraded (revision >= 2)", "verificationScriptFile": "q4_s4_validate_apiv2_present_if_helm.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {

@@ -7,8 +7,14 @@ if ! command -v helm >/dev/null 2>&1; then
   exit 1
 fi
 
-# Check the apiv2 release exists in helm namespace
-if ! helm list -n helm 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx "internal-issue-report-apiv2"; then
+ns=helm
+rel=internal-issue-report-apiv2
+
+# Must exist first
+if ! helm -n "$ns" list 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx "$rel"; then
   exit 1
 fi
-exit 0
+
+# Consider it upgraded if release revision >= 2
+rev=$(helm -n "$ns" history "$rel" 2>/dev/null | awk 'NR>1 {last=$1} END {print last+0}')
+test "$rev" -ge 2
