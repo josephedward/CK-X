@@ -385,7 +385,7 @@ echo "kubectl -n p2-deploy-svc get pods -l app=sunny" > /opt/course/exam3/p2/sun
 ```
 
 ## Preview P3 (Q22)
-**Question:** Fix the readinessProbe port in Deployment `earth-3cc-web` in `p3-readiness` so that Pods become ready and Service `earth-3cc-web-svc` has aget deployment ready state. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.
+**Question:** Fix the readinessProbe port in Deployment `earth-3cc-web` in `p3-readiness` so that Pods become ready and Service `earth-3cc-web-svc` reflects a ready Deployment state. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.
 
 **Answer:**
 ```bash
