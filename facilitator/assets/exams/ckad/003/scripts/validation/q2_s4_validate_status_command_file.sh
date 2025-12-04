@@ -12,12 +12,9 @@ fi
 # Execute the user's script and capture the output
 user_output=$("$USER_SCRIPT")
 
-# Execute the canonical command and capture the output
-# The namespace is single-pod, but the question context implies the command should work within the context of the question, so I will add the namespace
-canonical_output=$(kubectl -n single-pod get pod pod1 -o jsonpath='{.status.phase}')
-
-# Compare the outputs
-if [ "$user_output" == "$canonical_output" ]; then
+# The PDF provides two valid solutions. One gives `Status: Running` and the other `Running`.
+# We will check if the output contains "Running" to validate both.
+if [[ "$user_output" == *"Running"* ]]; then
     exit 0
 else
     exit 1
