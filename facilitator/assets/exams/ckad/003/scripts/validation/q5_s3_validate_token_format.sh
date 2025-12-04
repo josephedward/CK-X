@@ -7,10 +7,10 @@ if [ ! -f "$TOKEN_FILE" ]; then
     exit 1
 fi
 
-# Decode the token and check for JWT format
-DECODED_TOKEN=$(cat "$TOKEN_FILE" | base64 -d 2>/dev/null)
+# Check for JWT format
+TOKEN=$(cat "$TOKEN_FILE")
 
-if [[ ! "$DECODED_TOKEN" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
+if [[ ! "$TOKEN" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
     exit 1
 fi
 
