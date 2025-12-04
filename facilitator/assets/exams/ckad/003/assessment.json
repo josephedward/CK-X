@@ -19,7 +19,8 @@
         {"id": "1", "description": "Namespace exists", "verificationScriptFile": "q2_s1_validate_namespace.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "2", "description": "Pod exists", "verificationScriptFile": "q2_s2_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 2},
         {"id": "3", "description": "Container name is correct", "verificationScriptFile": "q2_s3_validate_container_name.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "4", "description": "Status command file exists", "verificationScriptFile": "q2_s4_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "4", "description": "Status command file outputs correct status", "verificationScriptFile": "q2_s4_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "5", "description": "Container image is correct", "verificationScriptFile": "q2_s5_validate_image.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
@@ -52,8 +53,9 @@
       "machineHostname": "ckad9999",
       "question": "Create ServiceAccount `neptune-sa-v2` in `service-accounts` and write the base64-decoded token from its Secret to `/opt/course/exam3/q05/token` on localhost.",
       "verification": [
-        {"id": "1", "description": "Token file exists", "verificationScriptFile": "q5_s1_validate_token_file_exists.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "2", "description": "Token file is non-empty", "verificationScriptFile": "q5_s2_validate_token_file_not_empty.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "1", "description": "Service Account exists", "verificationScriptFile": "q5_s1_validate_sa_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Token file is non-empty", "verificationScriptFile": "q5_s2_validate_token_file_not_empty.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "Token is a valid JWT", "verificationScriptFile": "q5_s3_validate_token_format.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
@@ -62,8 +64,13 @@
       "machineHostname": "ckad9999",
       "question": "Create Pod `pod6` in Namespace `readiness` using `busybox:1.31.0` with readinessProbe executing `cat /tmp/ready` (initialDelaySeconds=`5`, periodSeconds=`10`). The container command should be `sh -c 'touch /tmp/ready && sleep 1d'`. Confirm Pod becomes Ready.",
       "verification": [
-        {"id": "1", "description": "Pod exists", "verificationScriptFile": "q6_s1_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "2", "description": "Pod is Ready", "verificationScriptFile": "q6_s2_validate_pod_ready.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "1", "description": "Pod exists in 'readiness' namespace", "verificationScriptFile": "q6_s1_pod_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Pod has Ready condition True", "verificationScriptFile": "q6_s2_pod_ready.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "Container uses correct image 'busybox:1.31.0'", "verificationScriptFile": "q6_s3_image_correct.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Container has correct command", "verificationScriptFile": "q6_s4_command_correct.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "5", "description": "Readiness probe has correct command", "verificationScriptFile": "q6_s5_probe_command_correct.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "6", "description": "Readiness probe has correct initialDelaySeconds", "verificationScriptFile": "q6_s6_probe_delay_correct.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "7", "description": "Readiness probe has correct periodSeconds", "verificationScriptFile": "q6_s7_probe_period_correct.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
