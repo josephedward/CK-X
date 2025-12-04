@@ -53,9 +53,10 @@
       "machineHostname": "ckad9999",
       "question": "Create ServiceAccount `neptune-sa-v2` in `service-accounts` and write the base64-decoded token from its Secret to `/opt/course/exam3/q05/token` on localhost.",
       "verification": [
-        {"id": "1", "description": "Service Account exists", "verificationScriptFile": "q5_s1_validate_sa_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Token file is non-empty", "verificationScriptFile": "q5_s2_validate_token_file_not_empty.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "3", "description": "Token is a valid JWT", "verificationScriptFile": "q5_s3_validate_token_format.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "1", "description": "Token file exists and is not empty", "verificationScriptFile": "q5_s1_validate_file_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Token has a valid JWT format", "verificationScriptFile": "q5_s2_validate_token_format.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Token payload belongs to correct ServiceAccount", "verificationScriptFile": "q5_s3_validate_token_payload.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Token is valid according to Kubernetes API", "verificationScriptFile": "q5_s4_validate_token_api.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
