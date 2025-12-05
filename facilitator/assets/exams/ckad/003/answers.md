@@ -113,7 +113,7 @@ EOF
 ```
 
 ## Question 7
-**Question:** Search for the e-commerce Pod (annotation mentioning `my-happy-shop`) in Namespace `pod-move-source` and move it to `pod-move-target`. The Pod name is `webserver-sat-003`. It is acceptable to delete and recreate.
+**Question:** Search for the e-commerce Pod (annotation mentioning `my-happy-shop`) in Namespace `pod-move-source` and move it to `pod-move-target`.
 
 **Answer:**
 ```bash
