@@ -113,10 +113,16 @@
       "machineHostname": "ckad9999",
       "question": "Create a ClusterIP Service `project-plt-6cc-svc` in `services-curl` exposing Pod `project-plt-6cc-api` (image `nginx:1.17.3-alpine`, label `project=plt-6cc-api`) using port mapping `3333:80`. Use a temporary Pod to curl the Service and write the response to `/opt/course/exam3/q10/service_test.html` and the app logs to `/opt/course/exam3/q10/service_test.log`.",
       "verification": [
-        {"id": "1", "description": "Service exists", "verificationScriptFile": "q10_s1_validate_service_exists.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "2", "description": "Pod exists", "verificationScriptFile": "q10_s2_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Curl output saved", "verificationScriptFile": "q10_s3_validate_response_file.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "4", "description": "Logs file saved", "verificationScriptFile": "q10_s4_validate_logs_file.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "1", "description": "ClusterIP Service project-plt-6cc-svc exists in services-curl", "verificationScriptFile": "q10_s1_validate_service_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "Pod project-plt-6cc-api exists in services-curl", "verificationScriptFile": "q10_s2_validate_pod_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Pod has label project=plt-6cc-api", "verificationScriptFile": "q10_s5_validate_pod_label.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Pod image is nginx:1.17.3-alpine", "verificationScriptFile": "q10_s6_validate_pod_image.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "5", "description": "Service ports map 3333 -> 80", "verificationScriptFile": "q10_s7_validate_service_ports.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "6", "description": "Curl output saved to /opt/course/exam3/q10/service_test.html", "verificationScriptFile": "q10_s3_validate_response_file.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "7", "description": "Curl output contains nginx welcome text", "verificationScriptFile": "q10_s8_validate_response_contains_nginx.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "8", "description": "Logs file saved to /opt/course/exam3/q10/service_test.log", "verificationScriptFile": "q10_s4_validate_logs_file.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "9", "description": "Logs show an HTTP GET request", "verificationScriptFile": "q10_s9_validate_logs_contains_get.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "10", "description": "Curl executed via temporary pod (tmp)", "verificationScriptFile": "q10_s10_validate_tmp_pod_used.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
