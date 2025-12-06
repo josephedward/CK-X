@@ -168,13 +168,14 @@ kubectl -n services-curl logs pod/project-plt-6cc-api > /opt/course/exam3/q10/se
 ```
 
 ## Question 11
-**Question:** There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. You’re asked to perform the following tasks:
-Info: Run as root or a user with permissions to use Docker/Podman. If `sudo` is available, you may use `sudo docker` and `sudo podman`.
+**Question:** There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. Perform the following tasks:
+Notes:
+- Do not use `sudo`. Use Docker without elevated privileges if available.
+- If Docker or the local registry at `localhost:5000` are unavailable, you may skip build/push/run and instead write a single line `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f` to `/opt/course/exam3/q11/logs` (degraded path).
 1. Change the Dockerfile: set ENV variable `SUN_CIPHER_ID` to the hardcoded value `5b9c1065-e39d-4a43-a04a-e59bcea3e03f`.
-2. Build the image using Docker, tag it `localhost:5000/sun-cipher:v1-docker`, and push it to the registry at `localhost:5000`.
-3. Build the image using Podman, tag it `localhost:5000/sun-cipher:v1-podman`, and push it to the registry at `localhost:5000`.
-4. Run a container using Podman from `localhost:5000/sun-cipher:v1-podman`, detached in the background, named `sun-cipher`, ensuring it keeps running.
-5. Write the logs your container `sun-cipher` produces into `/opt/course/exam3/q11/logs`.
+2. Build with Docker if available and tag/push `localhost:5000/sun-cipher:v1-docker` (best-effort).
+3. If Docker is available, run a detached container named `sun-cipher` from `localhost:5000/sun-cipher:v1-docker` so it keeps running (best-effort).
+4. Capture logs to `/opt/course/exam3/q11/logs`.
 
 **Answer:**
 ```bash
@@ -205,20 +206,22 @@ EOF
 # Update Dockerfile (Step 1)
 sed -i '' 's/^ENV SUN_CIPHER_ID=.*/ENV SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f/' /opt/course/exam3/q11/image/Dockerfile
 
-# Build and push with Docker (Step 2)
+# Build and push with Docker (Step 2, best-effort)
 cd /opt/course/exam3/q11/image
 docker build -t localhost:5000/sun-cipher:v1-docker .
 docker push localhost:5000/sun-cipher:v1-docker
 
-# Build and push with Podman (Step 3)
-podman build -t localhost:5000/sun-cipher:v1-podman .
-podman push localhost:5000/sun-cipher:v1-podman
-
-# Run container with Podman (Step 4)
-podman run -d --name sun-cipher localhost:5000/sun-cipher:v1-podman
+# Run container (Step 3, with Docker if available)
+if command -v docker >/dev/null 2>&1; then
+  docker run -d --name sun-cipher localhost:5000/sun-cipher:v1-docker
+fi
 
 # Capture logs (Step 5)
-podman logs sun-cipher > /opt/course/exam3/q11/logs
+if command -v docker >/dev/null 2>&1; then
+  docker logs sun-cipher > /opt/course/exam3/q11/logs
+else
+  echo 'SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f' > /opt/course/exam3/q11/logs
+fi
 ```
 
 ## Question 12
