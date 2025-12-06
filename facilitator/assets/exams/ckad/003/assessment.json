@@ -63,7 +63,7 @@
       "id": "6",
       "namespace": "readiness",
       "machineHostname": "ckad9999",
-      "question": "Create Pod `pod6` in Namespace `readiness` using `busybox:1.31.0` with a readinessProbe that checks for `/tmp/ready` (initialDelaySeconds=`5`, periodSeconds=`10`). Ensure the container creates `/tmp/ready` and keeps running (for example: `touch /tmp/ready && sleep 1d`). Any equivalent command/args form is acceptable. Confirm the Pod becomes Ready.",
+      "question": "Create Pod `pod6` in Namespace `readiness` using `busybox:1.31.0` with a readinessProbe that checks with `cat /tmp/ready` (initialDelaySeconds=`5`, periodSeconds=`10`). Ensure the container creates `/tmp/ready` and keeps running (for example: `touch /tmp/ready && sleep 1d`). Any equivalent command/args form is acceptable. Confirm the Pod becomes Ready.",
       "verification": [
         {"id": "1", "description": "Pod exists in 'readiness' namespace", "verificationScriptFile": "q6_s1_pod_exists.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "2", "description": "Pod has Ready condition True", "verificationScriptFile": "q6_s2_pod_ready.sh", "expectedOutput": "0", "weightage": 2},
@@ -129,10 +129,14 @@
       "id": "11",
       "namespace": "image-logs",
       "machineHostname": "ckad9999",
-      "question": "Build and push two images (docker and podman variants) for a Golang app at `/opt/course/exam3/q11/image`, set ENV `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f`, run a container with podman, and write logs to `/opt/course/exam3/q11/logs`. If Docker/Podman/registry are unavailable, a degraded path is accepted: create a log file containing the `SUN_CIPHER_ID` marker.",
+      "question": "There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. You’re asked to perform the following tasks:\nInfo: Run as root or a user with permissions to use Docker/Podman. If `sudo` is available, you may use `sudo docker` and `sudo podman`. A local registry is provided and reachable at `localhost:5000` (the lab starts it automatically).\n1. Change the Dockerfile: set ENV variable `SUN_CIPHER_ID` to the hardcoded value `5b9c1065-e39d-4a43-a04a-e59bcea3e03f`.\n2. Build the image using Docker, tag it `localhost:5000/sun-cipher:v1-docker`, and push it to the registry at `localhost:5000`.\n3. Build the image using Podman, tag it `localhost:5000/sun-cipher:v1-podman`, and push it to the registry at `localhost:5000`.\n4. Run a container using Podman from `localhost:5000/sun-cipher:v1-podman`, detached in the background, named `sun-cipher`, ensuring it keeps running.\n5. Write the logs your container `sun-cipher` produces into `/opt/course/exam3/q11/logs`.",
       "verification": [
         {"id": "1", "description": "Logs file exists", "verificationScriptFile": "q11_s1_validate_logs_file_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Logs contain SUN_CIPHER_ID", "verificationScriptFile": "q11_s2_validate_logs_marker.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "2", "description": "Logs contain SUN_CIPHER_ID", "verificationScriptFile": "q11_s2_validate_logs_marker.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "3", "description": "Dockerfile has hardcoded SUN_CIPHER_ID", "verificationScriptFile": "q11_s3_validate_dockerfile_env.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "Podman container 'sun-cipher' running from v1-podman", "verificationScriptFile": "q11_s4_validate_container_running.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "5", "description": "Images tagged with localhost:5000 for docker and podman", "verificationScriptFile": "q11_s5_validate_local_image_tags.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "6", "description": "Registry has both tags (v1-docker, v1-podman)", "verificationScriptFile": "q11_s6_validate_registry_tags.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {

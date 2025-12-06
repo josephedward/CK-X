@@ -14,7 +14,7 @@ Namespaces
 
 Gotchas
 - Q4 (Helm): Requires `helm`. Setup seeds releases: `internal-issue-report-apiv1` and `internal-issue-report-apiv2` in `helm`. The task requires deleting `apiv1`, upgrading `apiv2`, and installing a new `internal-issue-report-apache` with 2 replicas. Validators require Helm; no degraded path.
-- Q11 (Docker/Podman): If not available, validators accept a logs file at `/opt/course/exam3/q11/logs` containing the marker `SUN_CIPHER_ID`.
+- Q11 (Docker/Podman + Registry): Requires both Docker and Podman CLIs and a local registry at `localhost:5000`. Access is mandatory; no degraded path is accepted. Ensure you can build, push, run, and collect logs.
 - Q12/13 (Storage): PVC may stay `Pending` without a matching provisioner; validators account for this.
 - Q18 (Service): Setup is intentionally broken (wrong selector and wrong targetPort). Validators require both endpoints to exist and the endpoint port to be 4444 after the fix.
 - Q19 (NodePort): Validators check type and `nodePort=30100`.
