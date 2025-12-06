@@ -71,20 +71,22 @@ helm -n helm upgrade --install internal-issue-report-apache bitnami/apache --set
 ```
 
 ## Question 5
-**Question:** Create ServiceAccount `neptune-sa-v2` in `service-accounts` and write the base64-decoded token from its Secret to `/opt/course/exam3/q05/token` on localhost.
+**Question:** A ServiceAccount named `neptune-sa-v2` exists in `service-accounts`. Create a bound token for this ServiceAccount using `kubectl create token` with `--audience=api` and write it to `/opt/course/exam3/q05/token` on localhost (single line).
 
 **Answer:**
 ```bash
+# Ensure namespace and SA exist (seeded in setup, but safe to re-run)
 kubectl create ns service-accounts || true
 kubectl -n service-accounts create sa neptune-sa-v2 || true
-# Try to discover bound token secret
-SECRET=$(kubectl -n service-accounts get sa neptune-sa-v2 -o jsonpath='{.secrets[0].name}' 2>/dev/null || true)
-if [ -n "$SECRET" ]; then
-  kubectl -n service-accounts get secret "$SECRET" -o jsonpath='{.data.token}' | base64 -d > /opt/course/exam3/q05/token
-else
-  # Fallback: create projected token via token request API (k8s >=1.24)
-  kubectl -n service-accounts create token neptune-sa-v2 > /opt/course/exam3/q05/token
-fi
+
+# Create a bound token with audience=api and a reasonable duration
+kubectl -n service-accounts create token neptune-sa-v2 \
+  --audience=api \
+  --duration=1h \
+  > /opt/course/exam3/q05/token
+
+# Quick self-check (optional): should print the SA identity
+kubectl auth whoami --token="$(tr -d '\r\n' < /opt/course/exam3/q05/token)"
 ```
 
 ## Question 6

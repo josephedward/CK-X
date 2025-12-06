@@ -51,7 +51,7 @@
       "id": "5",
       "namespace": "service-accounts",
       "machineHostname": "ckad9999",
-      "question": "A ServiceAccount named `neptune-sa-v2` exists in the `service-accounts` namespace. Create a token for this ServiceAccount and save the token to the file `/opt/course/exam3/q05/token` on localhost. The file should contain only the token string.",
+      "question": "A ServiceAccount named `neptune-sa-v2` exists in the `service-accounts` namespace. Create a bound token for this ServiceAccount using `kubectl create token` with `--audience=api` and save the token to the file `/opt/course/exam3/q05/token` on localhost (single line containing only the token).",
       "verification": [
         {"id": "1", "description": "Token file exists and is not empty", "verificationScriptFile": "q5_s1_validate_file_exists.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "2", "description": "Token has a valid JWT format", "verificationScriptFile": "q5_s2_validate_token_format.sh", "expectedOutput": "0", "weightage": 1},
