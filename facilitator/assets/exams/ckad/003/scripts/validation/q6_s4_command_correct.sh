@@ -6,25 +6,38 @@
 
 set -e
 
+NS=readiness
+POD=pod6
+READY_PATH=/tmp/ready
+
 # Ensure the pod exists before attempting exec
-kubectl -n readiness get pod pod6 >/dev/null 2>&1 || exit 1
+kubectl -n "$NS" get pod "$POD" >/dev/null 2>&1 || exit 1
 
 # 1) The ready flag must exist
-kubectl -n readiness exec pod6 -- sh -c 'test -f /tmp/ready' >/dev/null 2>&1 || exit 1
+kubectl -n "$NS" exec "$POD" -- sh -c "test -f $READY_PATH" >/dev/null 2>&1 || exit 1
 
-# 2) Inspect PID 1 command line for evidence that startup created the file.
-# Accept if the cmdline references the ready path, or uses common file-creation utilities.
-CMDLINE=$(kubectl -n readiness exec pod6 -- sh -c "cat /proc/1/cmdline | tr '\\0' ' '" 2>/dev/null || true)
+# Helper: match common creators or explicit path reference
+matches_creator_or_path() {
+  echo "$1" | grep -qE "/tmp/ready|\\b(touch|echo|printf|install|tee)\\b"
+}
 
-# Accept if the command line references the ready file path directly
-if echo "$CMDLINE" | grep -qE "/tmp/ready"; then
+# 2) Runtime PID 1 cmdline evidence (first preference)
+CMDLINE=$(kubectl -n "$NS" exec "$POD" -- sh -c "cat /proc/1/cmdline | tr '\\0' ' '" 2>/dev/null || true)
+if matches_creator_or_path "$CMDLINE"; then
   exit 0
 fi
 
-# Otherwise, accept if common creators are present (touch/echo/printf/install/tee) as a proxy
-if echo "$CMDLINE" | grep -qE "\\b(touch|echo|printf|install|tee)\\b"; then
+# 3) Fallback: Inspect the pod spec command/args (covers cases like `exec sleep 1d` where PID 1 no longer shows the creator)
+SPEC_CMD=$(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[0].command[*]} {.spec.containers[0].args[*]}' 2>/dev/null || true)
+if matches_creator_or_path "$SPEC_CMD"; then
   exit 0
 fi
 
-# If neither pattern matched, consider it not created during startup
+# 4) Fallback: Accept lifecycle postStart exec creating the file (still container-owned startup action)
+POST_START=$(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[0].lifecycle.postStart.exec.command[*]}' 2>/dev/null || true)
+if matches_creator_or_path "$POST_START"; then
+  exit 0
+fi
+
+# If nothing matched, consider it not created during startup
 exit 1
