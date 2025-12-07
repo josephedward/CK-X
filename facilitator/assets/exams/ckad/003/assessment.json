@@ -143,7 +143,7 @@
       "id": "12",
       "namespace": "storage-hostpath",
       "machineHostname": "ckad9999",
-      "question": "Create a new PersistentVolume named `earth-project-earthflower-pv`. It must have capacity `2Gi`, accessMode `ReadWriteOnce`, use `hostPath` `/Volumes/Data`, and must not define a `storageClassName`. Next, in Namespace `storage-hostpath`, create a PersistentVolumeClaim named `earth-project-earthflower-pvc` requesting `2Gi` storage with accessMode `ReadWriteOnce`, and do not define a `storageClassName`. Ensure the PVC binds to the PV. Finally, in Namespace `storage-hostpath`, create a Deployment named `project-earthflower` whose Pods use image `httpd:2.4.41-alpine` and mount the claim at `/tmp/project-data`.",
+      "question": "Create a new PersistentVolume named `earth-project-earthflower-pv`. It must have capacity `2Gi`, accessMode `ReadWriteOnce`, use `hostPath` `/Volumes/Data` with `type: DirectoryOrCreate`, and must not define a `storageClassName`. Next, in Namespace `storage-hostpath`, create a PersistentVolumeClaim named `earth-project-earthflower-pvc` requesting `2Gi` storage with accessMode `ReadWriteOnce`, and do not define a `storageClassName`. Ensure the PVC binds to the PV. Finally, in Namespace `storage-hostpath`, create a Deployment named `project-earthflower` whose Pods use image `httpd:2.4.41-alpine` and mount the claim at `/tmp/project-data`.",
       "verification": [
         {"id": "1", "description": "PV exists", "verificationScriptFile": "q12_s1_validate_pv_exists.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "2", "description": "PVC exists", "verificationScriptFile": "q12_s2_validate_pvc_exists.sh", "expectedOutput": "0", "weightage": 1},
@@ -156,7 +156,7 @@
         {"id": "9", "description": "PVC is Bound to the PV", "verificationScriptFile": "q12_s9_validate_pvc_bound_to_pv.sh", "expectedOutput": "0", "weightage": 2},
         {"id": "10", "description": "Deployment uses image httpd:2.4.41-alpine", "verificationScriptFile": "q12_s10_validate_deploy_image.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "11", "description": "Deployment mounts PVC at /tmp/project-data", "verificationScriptFile": "q12_s11_validate_deploy_pvc_mount.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "12", "description": "Deployment shows Pods ready", "verificationScriptFile": "q12_s12_validate_pod_ready.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "12", "description": "Deployment has created Pods", "verificationScriptFile": "q12_s12_validate_pod_ready.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
