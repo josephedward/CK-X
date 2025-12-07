@@ -233,6 +233,7 @@ spec:
   accessModes: ["ReadWriteOnce"]
   hostPath:
     path: /Volumes/Data
+    type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
