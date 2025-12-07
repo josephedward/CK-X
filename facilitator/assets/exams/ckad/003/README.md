@@ -14,7 +14,7 @@ Namespaces
 
 Gotchas
 - Q4 (Helm): Requires `helm`. Setup seeds releases: `internal-issue-report-apiv1` and `internal-issue-report-apiv2` in `helm`. The task requires deleting `apiv1`, upgrading `apiv2`, and installing a new `internal-issue-report-apache` with 2 replicas. Validators require Helm; no degraded path.
-- Q11 (Container tooling + Registry): Docker-only. If Docker/registry are unavailable, a degraded path is accepted: write `/opt/course/exam3/q11/logs` containing `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f`. Validators accept either the Docker path (image, container, registry tag) or the degraded logs path.
+- Q11 (Container tooling + Registry): Requires Docker and a local registry at `localhost:5000`. Validators assert the built/pushed image tag, a running `sun-cipher` container from `localhost:5000/sun-cipher:v1-docker`, and the registry tag presence.
 - Q12/13 (Storage): PVC may stay `Pending` without a matching provisioner; validators account for this.
 - Q18 (Service): Setup is intentionally broken (wrong selector and wrong targetPort). Validators require both endpoints to exist and the endpoint port to be 4444 after the fix.
 - Q19 (NodePort): Validators check type and `nodePort=30100`.

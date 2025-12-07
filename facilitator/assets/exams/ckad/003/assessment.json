@@ -129,14 +129,14 @@
       "id": "11",
       "namespace": "image-logs",
       "machineHostname": "ckad9999",
-      "question": "There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. Perform the following tasks:\nNotes:\n- Do not use `sudo`. Use Docker without elevated privileges if available.\n- If Docker or the local registry at `localhost:5000` are unavailable in your environment, you may skip the build/push/run steps and instead produce a log file as described in step 5 (degraded path).\n1. Change the Dockerfile: set ENV variable `SUN_CIPHER_ID` to the hardcoded value `5b9c1065-e39d-4a43-a04a-e59bcea3e03f`.\n2. Build the image using Docker (if available), tag it `localhost:5000/sun-cipher:v1-docker`, and push it to the registry at `localhost:5000` (best-effort).\n3. If Docker is available, run a detached container named `sun-cipher` from `localhost:5000/sun-cipher:v1-docker`, ensuring it keeps running (best-effort).\n4. Capture the runtime output into `/opt/course/exam3/q11/logs`. If you cannot run containers here, write a single line containing `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f` to that file.",
+      "question": "There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. Perform the following tasks:\nNotes:\n- Do not use `sudo`. Use Docker without elevated privileges.\n1. Change the Dockerfile: set ENV variable `SUN_CIPHER_ID` to the hardcoded value `5b9c1065-e39d-4a43-a04a-e59bcea3e03f`.\n2. Build the image using Docker, tag it `localhost:5000/sun-cipher:v1-docker`, and push it to the registry at `localhost:5000`.\n3. Run a detached container named `sun-cipher` from `localhost:5000/sun-cipher:v1-docker`, ensuring it keeps running.\n4. Capture the runtime output into `/opt/course/exam3/q11/logs`.",
       "verification": [
         {"id": "1", "description": "Logs file exists", "verificationScriptFile": "q11_s1_validate_logs_file_exists.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "2", "description": "Logs contain SUN_CIPHER_ID", "verificationScriptFile": "q11_s2_validate_logs_marker.sh", "expectedOutput": "0", "weightage": 2},
         {"id": "3", "description": "Dockerfile has hardcoded SUN_CIPHER_ID", "verificationScriptFile": "q11_s3_validate_dockerfile_env.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "4", "description": "Docker container 'sun-cipher' running from v1-docker (or logs present)", "verificationScriptFile": "q11_s4_validate_container_running.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "5", "description": "Docker image tagged localhost:5000/sun-cipher:v1-docker (or logs present)", "verificationScriptFile": "q11_s5_validate_local_image_tags.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "6", "description": "Registry has v1-docker tag (or logs present)", "verificationScriptFile": "q11_s6_validate_registry_tags.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "4", "description": "Docker container 'sun-cipher' running from v1-docker", "verificationScriptFile": "q11_s4_validate_container_running.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "5", "description": "Docker image tagged localhost:5000/sun-cipher:v1-docker", "verificationScriptFile": "q11_s5_validate_local_image_tags.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "6", "description": "Registry has v1-docker tag", "verificationScriptFile": "q11_s6_validate_registry_tags.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {

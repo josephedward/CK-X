@@ -170,11 +170,10 @@ kubectl -n services-curl logs pod/project-plt-6cc-api > /opt/course/exam3/q10/se
 ## Question 11
 **Question:** There are files to build a container image located at `/opt/course/exam3/q11/image`. The container runs a Golang application that outputs to stdout. Perform the following tasks:
 Notes:
-- Do not use `sudo`. Use Docker without elevated privileges if available.
-- If Docker or the local registry at `localhost:5000` are unavailable, you may skip build/push/run and instead write a single line `SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f` to `/opt/course/exam3/q11/logs` (degraded path).
+- Do not use `sudo`. Use Docker without elevated privileges.
 1. Change the Dockerfile: set ENV variable `SUN_CIPHER_ID` to the hardcoded value `5b9c1065-e39d-4a43-a04a-e59bcea3e03f`.
-2. Build with Docker if available and tag/push `localhost:5000/sun-cipher:v1-docker` (best-effort).
-3. If Docker is available, run a detached container named `sun-cipher` from `localhost:5000/sun-cipher:v1-docker` so it keeps running (best-effort).
+2. Build with Docker and tag/push `localhost:5000/sun-cipher:v1-docker`.
+3. Run a detached container named `sun-cipher` from `localhost:5000/sun-cipher:v1-docker` so it keeps running.
 4. Capture logs to `/opt/course/exam3/q11/logs`.
 
 **Answer:**
@@ -206,22 +205,16 @@ EOF
 # Update Dockerfile (Step 1)
 sed -i '' 's/^ENV SUN_CIPHER_ID=.*/ENV SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f/' /opt/course/exam3/q11/image/Dockerfile
 
-# Build and push with Docker (Step 2, best-effort)
+# Build and push with Docker (Step 2)
 cd /opt/course/exam3/q11/image
 docker build -t localhost:5000/sun-cipher:v1-docker .
 docker push localhost:5000/sun-cipher:v1-docker
 
-# Run container (Step 3, with Docker if available)
-if command -v docker >/dev/null 2>&1; then
-  docker run -d --name sun-cipher localhost:5000/sun-cipher:v1-docker
-fi
+# Run container (Step 3)
+docker run -d --name sun-cipher localhost:5000/sun-cipher:v1-docker
 
-# Capture logs (Step 5)
-if command -v docker >/dev/null 2>&1; then
-  docker logs sun-cipher > /opt/course/exam3/q11/logs
-else
-  echo 'SUN_CIPHER_ID=5b9c1065-e39d-4a43-a04a-e59bcea3e03f' > /opt/course/exam3/q11/logs
-fi
+# Capture logs (Step 4)
+docker logs sun-cipher > /opt/course/exam3/q11/logs
 ```
 
 ## Question 12

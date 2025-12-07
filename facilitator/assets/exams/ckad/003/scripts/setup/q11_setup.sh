@@ -2,7 +2,7 @@
 set -euo pipefail
 mkdir -p /opt/course/exam3/q11/image /opt/course/exam3/q11
 
-# Ensure local registry at localhost:5000 is running (best-effort)
+# Ensure local registry at localhost:5000 is running
 is_up=0
 if command -v curl >/dev/null 2>&1; then
   if curl -fsS http://localhost:5000/v2/ >/dev/null 2>&1; then
