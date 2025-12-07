@@ -218,7 +218,7 @@ docker logs sun-cipher > /opt/course/exam3/q11/logs
 ```
 
 ## Question 12
-**Question:** Create PV `earth-project-earthflower-pv` (2Gi, RWO, hostPath `/Volumes/Data`, no storageClass), PVC `earth-project-earthflower-pvc` (2Gi, RWO, no storageClass) in `storage-hostpath`, and a Deployment `project-earthflower` mounting it at `/tmp/project-data` using `httpd:2.4.41-alpine`.
+**Question:** Create a new PersistentVolume named `earth-project-earthflower-pv`. It must have capacity `2Gi`, accessMode `ReadWriteOnce`, use `hostPath` `/Volumes/Data`, and must not define a `storageClassName`. Next, in Namespace `storage-hostpath`, create a PersistentVolumeClaim named `earth-project-earthflower-pvc` requesting `2Gi` storage with accessMode `ReadWriteOnce`, and do not define a `storageClassName`. Ensure the PVC binds to the PV. Finally, in Namespace `storage-hostpath`, create a Deployment named `project-earthflower` whose Pods use image `httpd:2.4.41-alpine` and mount the claim at `/tmp/project-data`.
 
 **Answer:**
 ```bash
