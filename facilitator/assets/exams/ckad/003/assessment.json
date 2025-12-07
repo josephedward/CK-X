@@ -146,8 +146,17 @@
       "question": "Create PV `earth-project-earthflower-pv` (2Gi, RWO, hostPath `/Volumes/Data`, no storageClass), PVC `earth-project-earthflower-pvc` (2Gi, RWO, no storageClass) in `storage-hostpath`, and a Deployment `project-earthflower` mounting it at `/tmp/project-data` using `httpd:2.4.41-alpine`.",
       "verification": [
         {"id": "1", "description": "PV exists", "verificationScriptFile": "q12_s1_validate_pv_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "PVC exists and is Bound or Pending", "verificationScriptFile": "q12_s2_validate_pvc_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Deployment exists", "verificationScriptFile": "q12_s3_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "2", "description": "PVC exists", "verificationScriptFile": "q12_s2_validate_pvc_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Deployment exists", "verificationScriptFile": "q12_s3_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "4", "description": "PV capacity=2Gi and RWO", "verificationScriptFile": "q12_s4_validate_pv_capacity_mode.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "5", "description": "PV hostPath is /Volumes/Data", "verificationScriptFile": "q12_s5_validate_pv_hostpath.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "6", "description": "PV has no storageClass", "verificationScriptFile": "q12_s6_validate_pv_no_storageclass.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "7", "description": "PVC requests 2Gi and RWO", "verificationScriptFile": "q12_s7_validate_pvc_requests_mode.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "8", "description": "PVC has no storageClass", "verificationScriptFile": "q12_s8_validate_pvc_no_storageclass.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "9", "description": "PVC is Bound to the PV", "verificationScriptFile": "q12_s9_validate_pvc_bound_to_pv.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "10", "description": "Deployment uses image httpd:2.4.41-alpine", "verificationScriptFile": "q12_s10_validate_deploy_image.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "11", "description": "Deployment mounts PVC at /tmp/project-data", "verificationScriptFile": "q12_s11_validate_deploy_pvc_mount.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "12", "description": "Deployment shows Pods ready", "verificationScriptFile": "q12_s12_validate_pod_ready.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
