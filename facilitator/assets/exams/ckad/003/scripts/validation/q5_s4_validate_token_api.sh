@@ -6,16 +6,15 @@ NAMESPACE="service-accounts"
 SA_NAME="neptune-sa-v2"
 EXPECTED_WHOAMI="system:serviceaccount:${NAMESPACE}:${SA_NAME}"
 
-# This script uses the k8s API to validate the token's authenticity.
-if [ ! -f "$TOKEN_FILE" ]; then
-    # Exit gracefully if file doesn't exist, as other checks handle that.
-    exit 0
+# Fail if the token file is missing or empty.
+if [ ! -s "$TOKEN_FILE" ]; then
+  exit 1
 fi
 
 TOKEN=$(tr -d '\n\r' < "$TOKEN_FILE")
-# Basic format check to prevent errors
+# Require valid JWT format
 if ! [[ "$TOKEN" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
-    exit 0
+  exit 1
 fi
 
 # Prefer kubectl whoami, fallback to kubectl auth whoami, finally to decoding 'sub'.

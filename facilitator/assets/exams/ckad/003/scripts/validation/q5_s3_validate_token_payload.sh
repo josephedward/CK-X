@@ -6,16 +6,15 @@ NAMESPACE="service-accounts"
 SA_NAME="neptune-sa-v2"
 EXPECTED_SUB="system:serviceaccount:${NAMESPACE}:${SA_NAME}"
 
-# This script checks the token payload to ensure it belongs to the correct Service Account.
-if [ ! -f "$TOKEN_FILE" ]; then
-    # Exit gracefully if file doesn't exist, as other checks handle that.
-    exit 0
+# Fail if token file is missing or empty
+if [ ! -s "$TOKEN_FILE" ]; then
+  exit 1
 fi
 
 TOKEN=$(tr -d '\n\r' < "$TOKEN_FILE")
-# Basic format check to prevent errors
+# Require valid JWT format
 if ! [[ "$TOKEN" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
-    exit 0
+  exit 1
 fi
 
 # Base64url decode helper (no padding, -_/ alphabet)
@@ -30,7 +29,7 @@ b64url_decode() {
 PAYLOAD=$(printf '%s' "$TOKEN" | cut -d'.' -f2)
 DECODED_PAYLOAD=$(b64url_decode "$PAYLOAD")
 
-# If decode failed, bail gracefully
+# If decode failed, fail
 if [ -z "$DECODED_PAYLOAD" ]; then
   exit 1
 fi
