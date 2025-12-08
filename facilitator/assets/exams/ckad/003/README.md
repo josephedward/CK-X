@@ -15,7 +15,7 @@ Namespaces
 Gotchas
 - Q4 (Helm): Requires `helm`. Setup seeds releases: `internal-issue-report-apiv1` and `internal-issue-report-apiv2` in `helm`. The task requires deleting `apiv1`, upgrading `apiv2`, and installing a new `internal-issue-report-apache` with 2 replicas. Validators require Helm; no degraded path.
 - Q11 (Container tooling + Registry): Requires Docker and a local registry at `localhost:5000`. Validators assert the built/pushed image tag, a running `sun-cipher` container from `localhost:5000/sun-cipher:v1-docker`, and the registry tag presence.
-- Q12 (hostPath PV): The PV uses `hostPath: /Volumes/Data` with `type: DirectoryOrCreate` so it works across environments without manual node prep. Pods should generally become Ready. Validators only assert that pods are created (not strictly Ready) for broader compatibility.
+- Q12 (hostPath PV): The PV uses `hostPath: /Volumes/Data` with `type: DirectoryOrCreate` so it works across environments without manual node prep. To prevent the cluster's default StorageClass from being applied, set `storageClassName: ""` (empty) on the PVC. To guarantee it binds to the static PV, set `spec.volumeName: earth-project-earthflower-pv` on the PVC (prebinding). Pods should generally become Ready. Validators only assert that pods are created (not strictly Ready) for broader compatibility.
 - Q13 (Storage): PVC may stay `Pending` without a matching provisioner; validators account for this.
 - Q18 (Service): Setup is intentionally broken (wrong selector and wrong targetPort). Validators require both endpoints to exist and the endpoint port to be 4444 after the fix.
 - Q19 (NodePort): Validators check type and `nodePort=30100`.
