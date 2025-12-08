@@ -165,9 +165,14 @@
       "machineHostname": "ckad9999",
       "question": "Create StorageClass `moon-retain` (provisioner `moon-retainer`, reclaimPolicy `Retain`). Create PVC `moon-pvc-126` (3Gi, RWO, uses `moon-retain`) in `pvc-pending`. Since the provisioner does not exist, PVC should stay Pending. Write the PVC event message to `/opt/course/exam3/q13/pvc-126-reason`.",
       "verification": [
-        {"id": "1", "description": "StorageClass exists", "verificationScriptFile": "q13_s1_validate_sc_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "PVC exists in Pending", "verificationScriptFile": "q13_s2_validate_pvc_pending.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "3", "description": "Reason file exists", "verificationScriptFile": "q13_s3_validate_reason_file.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "1", "description": "Namespace exists", "verificationScriptFile": "q13_s0_validate_namespace_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "2", "description": "StorageClass exists", "verificationScriptFile": "q13_s1_validate_sc_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "StorageClass fields: provisioner/reclaimPolicy/volumeBindingMode", "verificationScriptFile": "q13_s4_validate_sc_fields.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "PVC exists in Pending", "verificationScriptFile": "q13_s2_validate_pvc_pending.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "5", "description": "PVC spec: size, mode, storageClassName", "verificationScriptFile": "q13_s5_validate_pvc_spec.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "6", "description": "PVC not bound to any PV", "verificationScriptFile": "q13_s6_validate_no_bound_pv.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "7", "description": "Reason file contains provisioner hint", "verificationScriptFile": "q13_s7_validate_reason_file_contains_keywords.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "8", "description": "Reason file exists", "verificationScriptFile": "q13_s3_validate_reason_file.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
