@@ -304,13 +304,13 @@ kubectl -n pvc-pending describe pvc moon-pvc-126 | sed -n '/Events/,$p' > /opt/c
 ```
 
 ## Question 14
-**Question:** In Namespace `secrets-cm`, create Secret `secret1` (user=`test`, pass=`pwd`) and make it available in Pod `secret-handler` as env vars `SECRET1_USER` and `SECRET1_PASS`. Also create ConfigMap `secret2` and mount it at `/tmp/secret2` in the same Pod. Save updated YAML to `/opt/course/exam3/q14/secret-handler-new.yaml`.
+**Question:** In Namespace `secrets-cm`, create Secret `secret1` (user=`test`, pass=`pwd`) and make it available in Pod `secret-handler` as env vars `SECRET1_USER` and `SECRET1_PASS`. Also create ConfigMap `configmap1` and mount it at `/tmp/secret2` in the same Pod. Save updated YAML to `/opt/course/exam3/q14/secret-handler-new.yaml`.
 
 **Answer:**
 ```bash
 kubectl create ns secrets-cm || true
 kubectl -n secrets-cm create secret generic secret1 --from-literal=user=test --from-literal=pass=pwd
-kubectl -n secrets-cm create configmap secret2 --from-literal=example=ok
+kubectl -n secrets-cm create configmap configmap1 --from-literal=example=ok
 # Edit the existing pod to include envFrom/volumes then save:
 kubectl -n secrets-cm get pod secret-handler -o yaml > /opt/course/exam3/q14/secret-handler-new.yaml
 # Edit file to add:
@@ -320,10 +320,10 @@ kubectl -n secrets-cm get pod secret-handler -o yaml > /opt/course/exam3/q14/sec
 # - name: SECRET1_PASS
 #   valueFrom: {secretKeyRef: {name: secret1, key: pass}}
 # volumes:
-# - name: secret2
-#   configMap: {name: secret2}
+# - name: configmap1
+#   configMap: {name: configmap1}
 # volumeMounts:
-# - {name: secret2, mountPath: /tmp/secret2}
+# - {name: configmap1, mountPath: /tmp/configmap1}
 ```
 
 ## Question 15
