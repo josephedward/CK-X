@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+# Ensure output directory exists for exam artifacts
+mkdir -p /opt/course/exam3/p3
+
 kubectl get ns p3-readiness >/dev/null 2>&1 || kubectl create ns p3-readiness
 
 # Wrong readinessProbe port to be fixed by user
@@ -44,5 +48,3 @@ spec:
     targetPort: 80
     protocol: TCP
 EOF
-
-mkdir -p /opt/course/exam3/p3
