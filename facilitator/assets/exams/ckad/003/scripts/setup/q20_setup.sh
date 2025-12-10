@@ -2,6 +2,9 @@
 set -euo pipefail
 kubectl get ns p1-liveness >/dev/null 2>&1 || kubectl create ns p1-liveness
 
+# Ensure output directory exists before writing files
+mkdir -p /opt/course/exam3/p1
+
 cat > /opt/course/exam3/p1/project-23-api.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
