@@ -2,6 +2,9 @@
 set -euo pipefail
 kubectl get ns sidecar-logging >/dev/null 2>&1 || kubectl create ns sidecar-logging
 
+# Ensure output directory exists before writing files
+mkdir -p /opt/course/exam3/q16
+
 cat > /opt/course/exam3/q16/cleaner.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
@@ -29,4 +32,3 @@ spec:
 EOF
 
 kubectl apply -f /opt/course/exam3/q16/cleaner.yaml
-mkdir -p /opt/course/exam3/q16
