@@ -226,7 +226,13 @@
       "question": "Add an InitContainer `init-con` (image `busybox:1.31.0`) to Deployment defined at `/opt/course/exam3/q17/test-init-container.yaml` that writes `index.html` with content `check this out!` into the shared volume. Save to `/opt/course/exam3/q17/test-init-container-new.yaml` and verify via curl.",
       "verification": [
         {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q17_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q17_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q17_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Init container exists", "verificationScriptFile": "q17_s3_validate_init_container_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "Init container uses correct image", "verificationScriptFile": "q17_s4_validate_init_container_image.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "5", "description": "Init container command is correct", "verificationScriptFile": "q17_s5_validate_init_container_command.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "6", "description": "Init container has correct volume mount", "verificationScriptFile": "q17_s6_validate_volume_mount.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "7", "description": "Main container curl returns expected content", "verificationScriptFile": "q17_s7_validate_main_container_curl.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "8", "description": "YAML is valid Deployment", "verificationScriptFile": "q17_s8_validate_yaml_is_valid.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
