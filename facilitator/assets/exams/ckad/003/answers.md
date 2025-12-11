@@ -352,7 +352,40 @@ kubectl apply -f /opt/course/exam3/q15/configmap.yaml
 **Answer:**
 ```bash
 kubectl create ns sidecar-logging || true
-# Edit the deployment from cleaner.yaml and add sidecar that tails the file, then save to cleaner-new.yaml
+# Create the updated deployment with sidecar container
+cat > /opt/course/exam3/q16/cleaner-new.yaml <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleaner
+  namespace: sidecar-logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: cleaner}
+  template:
+    metadata:
+      labels: {app: cleaner}
+    spec:
+      containers:
+      - name: cleaner-con
+        image: busybox:1.31.0
+        command: ["/bin/sh","-c","mkdir -p /var/log/cleaner; while true; do date >> /var/log/cleaner/cleaner.log; sleep 2; done"]
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/cleaner
+      - name: logger-con
+        image: busybox:1.31.0
+        command: ["/bin/sh","-c","tail -f /var/log/cleaner/cleaner.log"]
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/cleaner
+      volumes:
+      - name: logs
+        emptyDir: {}
+EOF
+
+kubectl apply -f /opt/course/exam3/q16/cleaner-new.yaml
 ```
 
 ## Question 17
@@ -402,9 +435,24 @@ kubectl apply -f /opt/course/exam3/q17/test-init-container-new.yaml
 
 **Answer:**
 ```bash
-kubectl -n svc-fix-endpoints get svc manager-api-svc -o yaml
-kubectl -n svc-fix-endpoints get deploy manager-api-deployment -o yaml
-# Fix selector/ports so service selects pods correctly and targetPort matches containerPort
+# Fix the service by updating selector and targetPort
+cat <<'EOF' | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: manager-api-svc
+  namespace: svc-fix-endpoints
+spec:
+  selector:
+    app: manager-api
+  ports:
+  - port: 4444
+    targetPort: 4444
+    protocol: TCP
+EOF
+
+# Verify the service now has endpoints
+kubectl -n svc-fix-endpoints get endpoints manager-api-svc
 ```
 
 ## Question 19
@@ -412,7 +460,27 @@ kubectl -n svc-fix-endpoints get deploy manager-api-deployment -o yaml
 
 **Answer:**
 ```bash
-kubectl -n nodeport-30100 patch svc jupiter-crew-svc -p '{"spec":{"type":"NodePort","ports":[{"port":80,"targetPort":80,"nodePort":30100}]}}'
+# Update the service to NodePort type with nodePort 30100
+cat <<'EOF' | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupiter-crew-svc
+  namespace: nodeport-30100
+spec:
+  type: NodePort
+  selector:
+    app: jupiter
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30100
+    protocol: TCP
+EOF
+
+# Verify the service is reachable (in single-node clusters, use localhost)
+POD_NAME=$(kubectl -n nodeport-30100 get pod -l app=jupiter -o jsonpath='{.items[0].metadata.name}')
+kubectl -n nodeport-30100 exec $POD_NAME -- curl -s http://localhost:30100
 ```
 
 ## Preview P1 (Q20)
@@ -420,7 +488,33 @@ kubectl -n nodeport-30100 patch svc jupiter-crew-svc -p '{"spec":{"type":"NodePo
 
 **Answer:**
 ```bash
-# Add TCP 80 livenessProbe with initialDelaySeconds: 10, periodSeconds: 15
+# Create deployment with liveness probe
+cat > /opt/course/exam3/p1/project-23-api-new.yaml <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-23-api
+  namespace: p1-liveness
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: p23}
+  template:
+    metadata:
+      labels: {app: p23}
+    spec:
+      containers:
+      - name: api
+        image: nginx:1.21.6-alpine
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 15
+EOF
+
 kubectl apply -f /opt/course/exam3/p1/project-23-api-new.yaml
 ```
 
@@ -430,11 +524,45 @@ kubectl apply -f /opt/course/exam3/p1/project-23-api-new.yaml
 **Answer:**
 ```bash
 kubectl create ns p2-deploy-svc || true
-kubectl -n p2-deploy-svc create deploy sunny --image=nginx:1.17.3-alpine --replicas=4 --dry-run=client -o yaml \
- | yq '.spec.template.spec.serviceAccountName = "sa-sun-deploy"' | kubectl apply -f -
+kubectl -n p2-deploy-svc create sa sa-sun-deploy || true
+
+# Create deployment with service account
+cat > /opt/course/exam3/p2/sunny-deployment.yaml <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sunny
+  namespace: p2-deploy-svc
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: sunny
+  template:
+    metadata:
+      labels:
+        app: sunny
+    spec:
+      serviceAccountName: sa-sun-deploy
+      containers:
+      - name: nginx
+        image: nginx:1.17.3-alpine
+        ports:
+        - containerPort: 80
+EOF
+
+kubectl apply -f /opt/course/exam3/p2/sunny-deployment.yaml
+
+# Create service
 kubectl -n p2-deploy-svc expose deploy sunny --name=sun-srv --type=ClusterIP --port=9999 --target-port=80
+
+# Create status command
 mkdir -p /opt/course/exam3/p2
-echo "kubectl -n p2-deploy-svc get pods -l app=sunny" > /opt/course/exam3/p2/sunny_status_command.sh
+cat > /opt/course/exam3/p2/sunny_status_command.sh <<'EOF'
+#!/usr/bin/env bash
+kubectl -n p2-deploy-svc get pods -l app=sunny --field-selector=status.phase=Running
+EOF
+chmod +x /opt/course/exam3/p2/sunny_status_command.sh
 ```
 
 ## Preview P3 (Q22)
@@ -442,6 +570,37 @@ echo "kubectl -n p2-deploy-svc get pods -l app=sunny" > /opt/course/exam3/p2/sun
 
 **Answer:**
 ```bash
-# Correct readinessProbe port to match container
-echo "Readiness probe used wrong port; fixed to containerPort." > /opt/course/exam3/p3/ticket-description.txt
+# Fix the readiness probe port to match the container port (80 instead of 8081)
+cat <<'EOF' | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: earth-3cc-web
+  namespace: p3-readiness
+spec:
+  replicas: 4
+  selector:
+    matchLabels: {app: e3cc}
+  template:
+    metadata:
+      labels: {app: e3cc}
+    spec:
+      containers:
+      - name: web
+        image: nginx:1.21.6-alpine
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+EOF
+
+# Write ticket description
+echo "The readiness probe was configured to use port 8081, but the container only exposes port 80. Fixed the readinessProbe port to match the containerPort (80)." > /opt/course/exam3/p3/ticket-description.txt
+
+# Verify pods become ready
+kubectl -n p3-readiness wait --for=condition=Ready pod -l app=e3cc --timeout=60s
 ```
