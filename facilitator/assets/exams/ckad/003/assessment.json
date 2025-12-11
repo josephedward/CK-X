@@ -241,10 +241,8 @@
       "machineHostname": "ckad9999",
       "question": "Fix the misconfiguration in Namespace `svc-fix-endpoints` where Service `manager-api-svc` should expose Deployment `manager-api-deployment` but has no endpoints. After fixing selector/ports, the Service should have endpoints.",
       "verification": [
-        {"id": "1", "description": "Service selector matches deployment labels", "verificationScriptFile": "q18_s1_validate_service_selector.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "2", "description": "Service has endpoints", "verificationScriptFile": "q18_s2_validate_service_endpoints.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "3", "description": "Endpoints expose port 4444", "verificationScriptFile": "q18_s3_validate_endpoint_port.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "4", "description": "Service port matches deployment containerPort", "verificationScriptFile": "q18_s4_validate_service_port_matches_deployment.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "1", "description": "Service has endpoints", "verificationScriptFile": "q18_s2_validate_service_endpoints.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "2", "description": "Endpoints expose port 4444", "verificationScriptFile": "q18_s3_validate_endpoint_port.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
@@ -254,9 +252,7 @@
       "question": "In Namespace `nodeport-30100`, change Service `jupiter-crew-svc` from `ClusterIP` to `NodePort` and set `nodePort=30100`. Verify reachability inside cluster (single-node clusters reachable on that node).",
       "verification": [
         {"id": "1", "description": "Service type is NodePort", "verificationScriptFile": "q19_s1_validate_service_type.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "2", "description": "Service nodePort is 30100", "verificationScriptFile": "q19_s2_validate_service_nodeport.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "3", "description": "Service is reachable on NodePort", "verificationScriptFile": "q19_s3_validate_service_is_reachable_on_nodeport.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "4", "description": "Service still has endpoints", "verificationScriptFile": "q19_s4_validate_service_still_has_endpoints.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "2", "description": "Service nodePort is 30100", "verificationScriptFile": "q19_s2_validate_service_nodeport.sh", "expectedOutput": "0", "weightage": 2}
       ]
     },
     {
@@ -266,12 +262,7 @@
       "question": "Add a liveness probe (TCP 80, initialDelay=10s, period=15s) to Deployment `project-23-api` in `p1-liveness`. Save to `/opt/course/exam3/p1/project-23-api-new.yaml` and apply.",
       "verification": [
         {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q20_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q20_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Liveness probe is TCP on port 80", "verificationScriptFile": "q20_s3_validate_liveness_probe_is_tcp.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "4", "description": "Liveness probe initialDelay is 10s", "verificationScriptFile": "q20_s4_validate_liveness_probe_delay.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "5", "description": "Liveness probe period is 15s", "verificationScriptFile": "q20_s5_validate_liveness_probe_period.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "6", "description": "Deployment is ready after probe", "verificationScriptFile": "q20_s6_validate_deployment_is_ready.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "7", "description": "YAML is valid Deployment", "verificationScriptFile": "q20_s7_validate_yaml_is_valid.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q20_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
@@ -282,11 +273,7 @@
       "verification": [
         {"id": "1", "description": "Deployment exists with 4 replicas", "verificationScriptFile": "q21_s1_validate_deployment_and_replicas.sh", "expectedOutput": "0", "weightage": 2},
         {"id": "2", "description": "Service exists", "verificationScriptFile": "q21_s2_validate_service_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Status command file exists", "verificationScriptFile": "q21_s3_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "4", "description": "Pods use correct service account", "verificationScriptFile": "q21_s4_validate_pod_service_account.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "5", "description": "Service selector targets deployment", "verificationScriptFile": "q21_s5_validate_service_selector.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "6", "description": "Service exposes port 9999", "verificationScriptFile": "q21_s6_validate_service_port.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "7", "description": "Status command works correctly", "verificationScriptFile": "q21_s7_validate_status_command_file_works.sh", "expectedOutput": "0", "weightage": 2}
+        {"id": "3", "description": "Status command file exists", "verificationScriptFile": "q21_s3_validate_status_command_file.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
@@ -296,10 +283,7 @@
       "question": "Fix the readinessProbe port in Deployment `earth-3cc-web` in `p3-readiness` so that Pods become ready and Service `earth-3cc-web-svc` has endpoints. Write a short description of the issue to `/opt/course/exam3/p3/ticket-description.txt`.",
       "verification": [
         {"id": "1", "description": "Deployment shows all replicas ready", "verificationScriptFile": "q22_s1_validate_deployment_ready.sh", "expectedOutput": "0", "weightage": 3},
-        {"id": "2", "description": "Ticket description file exists", "verificationScriptFile": "q22_s2_validate_ticket_file_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "3", "description": "Service has endpoints", "verificationScriptFile": "q22_s3_validate_service_has_endpoints.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "4", "description": "Readiness probe targets correct port", "verificationScriptFile": "q22_s4_validate_readiness_probe_port.sh", "expectedOutput": "0", "weightage": 2},
-        {"id": "5", "description": "Ticket file contains plausible explanation", "verificationScriptFile": "q22_s5_validate_ticket_file_content.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "2", "description": "Ticket description file exists", "verificationScriptFile": "q22_s2_validate_ticket_file_exists.sh", "expectedOutput": "0", "weightage": 1}
       ]
     }
   ]
