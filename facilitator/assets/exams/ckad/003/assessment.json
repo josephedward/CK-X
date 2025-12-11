@@ -210,7 +210,13 @@
       "question": "Add a sidecar `logger-con` (image `busybox:1.31.0`) to Deployment `cleaner` in `sidecar-logging` reading the same volume and executing `tail -f /var/log/cleaner/cleaner.log`. Save updated Deployment to `/opt/course/exam3/q16/cleaner-new.yaml` and ensure Deployment is running.",
       "verification": [
         {"id": "1", "description": "Deployment exists", "verificationScriptFile": "q16_s1_validate_deployment_exists.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q16_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1}
+        {"id": "2", "description": "Updated YAML file exists", "verificationScriptFile": "q16_s2_validate_yaml_file_exists.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "3", "description": "Sidecar container exists", "verificationScriptFile": "q16_s3_validate_sidecar_container_exists.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "4", "description": "Sidecar uses correct image", "verificationScriptFile": "q16_s4_validate_sidecar_image.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "5", "description": "Sidecar command is correct", "verificationScriptFile": "q16_s5_validate_sidecar_command.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "6", "description": "Sidecar shares volume mount", "verificationScriptFile": "q16_s6_validate_volume_mount.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "7", "description": "Deployment is ready", "verificationScriptFile": "q16_s7_validate_deployment_is_ready.sh", "expectedOutput": "0", "weightage": 2},
+        {"id": "8", "description": "YAML is valid Deployment", "verificationScriptFile": "q16_s8_validate_yaml_is_valid.sh", "expectedOutput": "0", "weightage": 1}
       ]
     },
     {
