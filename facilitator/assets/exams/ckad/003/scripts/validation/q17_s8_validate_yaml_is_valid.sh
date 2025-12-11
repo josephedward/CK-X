@@ -12,6 +12,8 @@ fi
 # Try to apply the YAML with dry-run to validate it
 if ! kubectl apply -f "$YAML_FILE" --dry-run=client >/dev/null 2>&1; then
     echo "YAML file is not a valid Kubernetes Deployment manifest"
+    echo "Debug: Trying to show YAML content..."
+    head -20 "$YAML_FILE"
     exit 1
 fi
 

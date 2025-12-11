@@ -360,7 +360,40 @@ kubectl create ns sidecar-logging || true
 
 **Answer:**
 ```bash
-# Edit test-init-container.yaml to add init container busybox:1.31.0 that writes /var/www/html/index.html
+# Edit test-init-container.yaml to add init container busybox:1.31.0 that writes /usr/share/nginx/html/index.html
+# The init container should mount the 'html' volume at /usr/share/nginx/html and write the content
+cat > /opt/course/exam3/q17/test-init-container-new.yaml <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-init-container
+  namespace: init-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: init-web}
+  template:
+    metadata:
+      labels: {app: init-web}
+    spec:
+      initContainers:
+      - name: init-con
+        image: busybox:1.31.0
+        command: ["/bin/sh", "-c", "echo 'check this out!' > /usr/share/nginx/html/index.html"]
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      containers:
+      - name: web
+        image: nginx:1.17.3-alpine
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        emptyDir: {}
+EOF
+
 kubectl apply -f /opt/course/exam3/q17/test-init-container-new.yaml
 ```
 

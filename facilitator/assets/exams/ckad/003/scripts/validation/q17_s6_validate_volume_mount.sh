@@ -5,6 +5,8 @@ set -euo pipefail
 INIT_VOLUME_MOUNT=$(kubectl -n init-container get deploy test-init-container -o jsonpath='{.spec.template.spec.initContainers[?(@.name=="init-con")].volumeMounts[?(@.name=="html")].mountPath}')
 if [ -z "$INIT_VOLUME_MOUNT" ]; then
     echo "Init container does not have html volume mount"
+    echo "Debug: Checking if init container exists..."
+    kubectl -n init-container get deploy test-init-container -o jsonpath='{.spec.template.spec.initContainers[*].name}'
     exit 1
 fi
 
