@@ -64,15 +64,3 @@ terraform.tfstate.backup
 /scripts/dev
 /scripts/release
 scripts/docker-compose.yaml
-facilitator/assets/exams/ckad/004/assessment.json.backup
-facilitator/assets/exams/ckad/004/assessment_corrected.json
-facilitator/assets/exams/ckad/004/mismatch_analysis_summary.md
-facilitator/assets/exams/ckad/004/quick_fix_guide.md
-facilitator/assets/exams/ckad/004/validation_mismatch_report.md
-scripts/analyze_validation_mismatch.py
-scripts/ckad_004_content_mismatches.txt
-scripts/detailed_validation_analysis.py
-/scripts/validation_backup_20240115
-scripts/validation_fix_plan.md
-docker-compose.yaml
-facilitator/assets/exams/ckad/002/scripts/validation/q8_s1_validate_namespace.sh
