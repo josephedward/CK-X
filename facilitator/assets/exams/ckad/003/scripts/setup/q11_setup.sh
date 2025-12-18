@@ -18,8 +18,8 @@ fi
 
 if [ "$is_up" -ne 1 ]; then
   if command -v docker >/dev/null 2>&1; then
-    docker ps --format '{{.Names}}' | grep -qx 'ckx-registry' || \
-      docker run -d -p 5000:5000 --restart=always --name ckx-registry registry:2 >/dev/null
+    docker rm -f ckx-registry 2>/dev/null || true
+    docker run -d -p 5000:5000 --name ckx-registry registry:2 >/dev/null
   fi
 fi
 
