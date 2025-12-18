@@ -3,60 +3,41 @@ set -e
 
 NAMESPACE="persistent-storage"
 
-kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
 
-# Create deployment for autoscaling
+# Create PersistentVolumeClaim
 cat <<EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: scalable-app
+  name: data-pvc
   namespace: $NAMESPACE
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: scalable
-  template:
-    metadata:
-      labels:
-        app: scalable
-    spec:
-      containers:
-      - name: app
-        image: nginx:latest
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 EOF
 
-# Create HorizontalPodAutoscaler
+# Create pod with PVC mounted
 cat <<EOF | kubectl apply -f -
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: v1
+kind: Pod
 metadata:
-  name: app-hpa
+  name: storage-pod
   namespace: $NAMESPACE
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: scalable-app
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+  containers:
+  - name: app
+    image: nginx:latest
+    volumeMounts:
+    - name: data-volume
+      mountPath: /data
+  volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: data-pvc
 EOF
 
-echo "✓ Q20 setup complete: Deployment with HPA created in namespace $NAMESPACE"
+echo "✓ Q20 setup complete: PVC and storage pod created in namespace $NAMESPACE"
