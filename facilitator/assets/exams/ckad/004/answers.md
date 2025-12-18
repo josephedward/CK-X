@@ -456,12 +456,12 @@ kubectl exec backend-pod -- ls -la /var/run/secrets/kubernetes.io/serviceaccount
 ---
 
 ### Question 15: Resource Quotas
-Create a ResourceQuota named `ns-quota` in a new namespace `quota-ns` that limits the total number of pods allowed in the namespace to 5.
+Create a ResourceQuota named `ns-quota` in the namespace `quota-ns` that limits the total number of pods allowed in the namespace to 5.
 
 **Answer:**
 ```bash
-# Create the namespace
-kubectl create namespace quota-ns
+# The namespace quota-ns has been created for you
+# Create the ResourceQuota
 ```
 
 ```yaml
