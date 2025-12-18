@@ -332,7 +332,7 @@ Create a Secret named `app-secret` containing `api-key=123456`. Create a pod nam
 **Answer:**
 ```bash
 # Create the Secret
-kubectl create secret generic app-secret --from-literal=api-key=123456
+kubectl create secret generic app-secret --from-literal=api-key=example-api-key-123
 
 # Verify the Secret
 kubectl get secret app-secret
