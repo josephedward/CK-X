@@ -5,41 +5,25 @@ NAMESPACE="readiness-probes"
 
 kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
 
-# Create Job
+# Create pod with readiness probe
 cat <<EOF | kubectl apply -f -
-apiVersion: batch/v1
-kind: Job
+apiVersion: v1
+kind: Pod
 metadata:
-  name: compute-job
+  name: ready-web
   namespace: $NAMESPACE
 spec:
-  template:
-    spec:
-      containers:
-      - name: compute
-        image: busybox:latest
-        command: ['sh', '-c', 'echo "Job running"; sleep 10; echo "Job completed"']
-      restartPolicy: Never
+  containers:
+  - name: nginx-container
+    image: nginx
+    ports:
+    - containerPort: 80
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
 EOF
 
-# Create CronJob
-cat <<EOF | kubectl apply -f -
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: periodic-task
-  namespace: $NAMESPACE
-spec:
-  schedule: "0 0 * * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: task
-            image: busybox:latest
-            command: ['sh', '-c', 'echo "Scheduled task running"']
-          restartPolicy: OnFailure
-EOF
-
-echo "✓ Q17 setup complete: Job and CronJob created in namespace $NAMESPACE"
+echo "✓ Q17 setup complete: Pod with readiness probe created in namespace $NAMESPACE"
