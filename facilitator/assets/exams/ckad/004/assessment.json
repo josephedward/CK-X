@@ -482,8 +482,8 @@
         },
         {
           "id": "4",
-          "description": "Job completed successfully",
-          "verificationScriptFile": "q9_s4_job_completed_successfully.sh",
+          "description": "Job pod exited with success code",
+          "verificationScriptFile": "q9_s4_validate_pod_exit_code.sh",
           "expectedOutput": "0",
           "weightage": 2
         },
