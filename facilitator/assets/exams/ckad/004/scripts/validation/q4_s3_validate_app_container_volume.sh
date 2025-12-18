@@ -3,9 +3,15 @@
 # Points: 2
 
 NS="sidecar-logging"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-MP=$(jp pod logger-pod "$NS" '.spec.containers[?(@.name=="app")].volumeMounts[?(@.name=="shared-log")].mountPath')
-expect_equals "$MP" "/var/log" \
-  "App container mounts shared-log at /var/log" \
-  "App container mountPath is '$MP', expected '/var/log'"
+
+# Get the mountPath for the app container's shared-log volume mount
+MP=$(kubectl get pod logger-pod -n "$NS" -o jsonpath='{.spec.containers[?(@.name=="app")].volumeMounts[?(@.name=="shared-log")].mountPath}' 2>/dev/null)
+
+# Check if the mountPath is /var/log
+if [ "$MP" = "/var/log" ]; then
+    echo "✓ App container mounts shared-log at /var/log"
+    exit 0
+else
+    echo "✗ App container mountPath is '$MP', expected '/var/log'"
+    exit 1
+fi
