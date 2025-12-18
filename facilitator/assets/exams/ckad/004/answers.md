@@ -4,15 +4,15 @@
 *Focus: Basic API interaction, namespaces, and pod creation.*
 
 ### Question 1: Namespace Management
-Create a namespace named `ckad-ns-a`. Inside this namespace, run a pod named `web-core` using the image `nginx:alpine`.
+Create a namespace named `ckad-ns-a`. Inside this namespace, run a pod named `web-core` using the image `nginx:alpine` with resource requests of 100m CPU and 128Mi memory.
 
 **Answer:**
 ```bash
 # Create the namespace
 kubectl create namespace ckad-ns-a
 
-# Run the pod in the namespace
-kubectl run web-core --image=nginx:alpine -n ckad-ns-a
+# Run the pod in the namespace with resource requests
+kubectl run web-core --image=nginx:alpine -n ckad-ns-a --requests=cpu=100m,memory=128Mi
 
 # Verify
 kubectl get pods -n ckad-ns-a

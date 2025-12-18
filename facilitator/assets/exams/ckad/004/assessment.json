@@ -4,7 +4,7 @@
       "id": "1",
       "namespace": "ckad-ns-a",
       "machineHostname": "ckad9999",
-      "question": "Create a namespace named `ckad-ns-a`. Inside this namespace, run a pod named `web-core` using the image `nginx:alpine`.",
+      "question": "Create a namespace named `ckad-ns-a`. Inside this namespace, run a pod named `web-core` using the image `nginx:alpine` with resource requests of 100m CPU and 128Mi memory.",
       "concepts": [
         "namespaces",
         "pods"
