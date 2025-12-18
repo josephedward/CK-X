@@ -44,20 +44,6 @@
           "verificationScriptFile": "q1_s5_pod_has_correct_resources.sh",
           "expectedOutput": "0",
           "weightage": 2
-        },
-        {
-          "id": "6",
-          "description": "Pod has node selector",
-          "verificationScriptFile": "q1_s6_pod_has_node_selector.sh",
-          "expectedOutput": "0",
-          "weightage": 2
-        },
-        {
-          "id": "7",
-          "description": "Namespace has labels",
-          "verificationScriptFile": "q1_s7_namespace_has_labels.sh",
-          "expectedOutput": "0",
-          "weightage": 2
         }
       ]
     },
