@@ -1,11 +1,24 @@
 #!/bin/bash
 set -e
 
-NAMESPACE="resource-quotas"
+NAMESPACE="quota-ns"
 
+# Create the namespace
 kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
 
-# Create deployment for network policy testing
+# Create ResourceQuota with pod limit
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: ns-quota
+  namespace: $NAMESPACE
+spec:
+  hard:
+    pods: "5"
+EOF
+
+# Create deployment for quota testing
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -50,4 +63,4 @@ spec:
         - containerPort: 80
 EOF
 
-echo "✓ Q15 setup complete: Frontend and backend deployments created in namespace $NAMESPACE"
+echo "✓ Q15 setup complete: Namespace $NAMESPACE, ResourceQuota ns-quota, and deployments created"

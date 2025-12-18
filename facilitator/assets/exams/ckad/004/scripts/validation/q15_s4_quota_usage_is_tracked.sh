@@ -2,7 +2,7 @@
 # Q15.4 - Quota usage is tracked
 # Points: 2
 
-kubectl describe quota ns-quota -n resource-quotas 2>/dev/null | grep -q 'Used:' && {
+kubectl describe quota ns-quota -n quota-ns 2>/dev/null | grep -q 'Used:' && {
   echo "✓ Quota usage is tracked"
   exit 0
 } || {
