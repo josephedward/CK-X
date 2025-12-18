@@ -163,7 +163,7 @@ kubectl -n services-curl run project-plt-6cc-api --image=nginx:1.17.3-alpine --l
 kubectl -n services-curl expose pod project-plt-6cc-api --name=project-plt-6cc-svc --type=ClusterIP --port=3333 --target-port=80
 
 mkdir -p /opt/course/exam3/q10
-kubectl -n services-curl run tmp --rm -i --image=nginx:alpine --restart=Never -- bash -lc 'apk add --no-cache curl >/dev/null; curl -s project-plt-6cc-svc:3333' > /opt/course/exam3/q10/service_test.html
+kubectl -n services-curl run tmp --rm --image=nginx:alpine --restart=Never -- bash -c 'apk add --no-cache curl >/dev/null && curl -s project-plt-6cc-svc:3333' > /opt/course/exam3/q10/service_test.html
 kubectl -n services-curl logs pod/project-plt-6cc-api > /opt/course/exam3/q10/service_test.log
 ```
 
