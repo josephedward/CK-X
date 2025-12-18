@@ -14,6 +14,10 @@ fi
 # Get the container exit code
 EXIT_CODE=$(kubectl get pod "$POD" -n "$NS" -o jsonpath='{.status.containerStatuses[0].state.terminated.exitCode}' 2>/dev/null)
 
+if [[ -z "$EXIT_CODE" ]]; then
+  fail "Job pod has not terminated yet or exit code unavailable"
+fi
+
 if [[ "$EXIT_CODE" == "0" ]]; then
   ok "Job pod exited with success code (0)"
 else
