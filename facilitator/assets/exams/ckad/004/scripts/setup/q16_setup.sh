@@ -42,6 +42,9 @@ spec:
       containers:
       - name: mysql
         image: mysql:5.7
+        env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "yes"
         ports:
         - containerPort: 3306
           name: mysql
