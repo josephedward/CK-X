@@ -964,7 +964,7 @@
     },
     {
       "id": "21",
-      "question": "In the `helm-operations` namespace, Add the `bitnami` helm repository (`https://charts.bitnami.com/bitnami`). Search for the `nginx` chart, and install it into a new namespace `helm-ns` with the release name `my-web`.",
+      "question": "In the `helm-operations` namespace, Add the `bitnami` helm repository (`https://charts.bitnami.com/bitnami`). Search for the `nginx` chart, and install it into the `helm-operations` namespace with the release name `my-web`.",
       "namespace": "helm-operations",
       "machineHostname": "ckad9999",
       "concepts": [
@@ -973,7 +973,7 @@
       "verification": [
         {
           "id": "1",
-          "description": "Namespace helm-ns exists",
+          "description": "Namespace helm-operations exists",
           "verificationScriptFile": "q21_s1_validate_helm_namespace_exists.sh",
           "expectedOutput": "0",
           "weightage": 2
