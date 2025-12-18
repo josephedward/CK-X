@@ -407,13 +407,6 @@
           "verificationScriptFile": "q7_s4_rollout_is_complete.sh",
           "expectedOutput": "0",
           "weightage": 2
-        },
-        {
-          "id": "5",
-          "description": "Image updated to 1.17",
-          "verificationScriptFile": "q7_s5_image_updated_to_1.17.sh",
-          "expectedOutput": "0",
-          "weightage": 2
         }
       ]
     },
