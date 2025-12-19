@@ -3,10 +3,10 @@
 # Points: 2
 
 NS="services-clusterip"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-if k_exists svc web-svc "$NS"; then
-  ok "Service web-svc exists in $NS"
+if kubectl get svc web-svc -n "$NS" >/dev/null 2>&1; then
+  echo "✓ Service web-svc exists in $NS"
+  exit 0
 else
-  fail "Service web-svc not found in $NS"
+  echo "✗ Service web-svc not found in $NS"
+  exit 1
 fi
