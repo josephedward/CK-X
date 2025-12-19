@@ -2,10 +2,10 @@
 # Q15.02 - ResourceQuota ns-quota exists in quota-ns
 # Points: 2
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-if k_exists resourcequota ns-quota quota-ns; then
-  ok "ResourceQuota ns-quota exists in quota-ns"
+if kubectl get resourcequota ns-quota -n quota-ns >/dev/null 2>&1; then
+  echo "✓ ResourceQuota ns-quota exists in quota-ns"
+  exit 0
 else
-  fail "ResourceQuota ns-quota not found in quota-ns"
+  echo "✗ ResourceQuota ns-quota not found in quota-ns"
+  exit 1
 fi
