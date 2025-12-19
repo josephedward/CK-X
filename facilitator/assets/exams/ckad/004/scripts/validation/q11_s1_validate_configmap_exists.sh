@@ -3,10 +3,10 @@
 # Points: 2
 
 NS="configmaps-env"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-if k_exists configmap app-config "$NS"; then
-  ok "ConfigMap app-config exists in $NS"
+if kubectl get configmap app-config -n "$NS" >/dev/null 2>&1; then
+  echo "✓ ConfigMap app-config exists in $NS"
+  exit 0
 else
-  fail "ConfigMap app-config not found in $NS"
+  echo "✗ ConfigMap app-config not found in $NS"
+  exit 1
 fi
