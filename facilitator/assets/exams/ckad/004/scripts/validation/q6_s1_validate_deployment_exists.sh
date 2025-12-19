@@ -2,12 +2,11 @@
 # Q06.01 - Deployment web-deploy exists
 # Points: 2
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-
 NS="deployments-scaling"
-if k_exists deploy web-deploy "$NS"; then
-  ok "Deployment web-deploy exists in $NS"
+if kubectl get deploy web-deploy -n "$NS" >/dev/null 2>&1; then
+  echo "✓ Deployment web-deploy exists in $NS"
+  exit 0
 else
-  fail "Deployment web-deploy not found in $NS"
+  echo "✗ Deployment web-deploy not found in $NS"
+  exit 1
 fi
