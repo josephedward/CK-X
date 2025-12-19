@@ -1,11 +1,18 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Q16.02 - Liveness probe configured correctly
-# Points: 4
 
-NS="liveness-probes"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-CMD=$(jp pod live-check "$NS" .spec.containers[0].livenessProbe.exec.command[0])
-expect_equals "$CMD" "cat" \
-  "Liveness probe exec command configured" \
-  "Liveness probe not configured as expected"
+# Get the liveness probe command and arguments
+COMMAND=$(kubectl get pod live-check -n liveness-probes -o jsonpath='{.spec.containers[0].livenessProbe.exec.command}')
+
+# The expected command is a JSON array string '["cat","/tmp/healthy"]'
+EXPECTED_COMMAND='["cat","/tmp/healthy"]'
+
+if [ "$COMMAND" == "$EXPECTED_COMMAND" ]; then
+  echo "✓ Liveness probe exec command configured correctly"
+  exit 0
+else
+  echo "✗ Liveness probe not configured as expected"
+  echo "Expected: $EXPECTED_COMMAND"
+  echo "Got: $COMMAND"
+  exit 1
+fi

@@ -3,10 +3,10 @@
 # Points: 2
 
 NS="liveness-probes"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-if k_exists pod live-check "$NS"; then
-  ok "Pod live-check exists in $NS"
+if kubectl get pod live-check -n "$NS" >/dev/null 2>&1; then
+  echo "✓ Pod live-check exists in $NS"
+  exit 0
 else
-  fail "Pod live-check not found in $NS"
+  echo "✗ Pod live-check not found in $NS"
+  exit 1
 fi
