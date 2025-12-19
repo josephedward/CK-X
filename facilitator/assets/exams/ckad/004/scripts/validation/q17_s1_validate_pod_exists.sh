@@ -3,10 +3,10 @@
 # Points: 2
 
 NS="readiness-probes"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "$SCRIPT_DIR/../lib/common.sh"
-if k_exists pod ready-web "$NS"; then
-  ok "Pod ready-web exists in $NS"
+if kubectl get pod ready-web -n "$NS" >/dev/null 2>&1; then
+  echo "✓ Pod ready-web exists in $NS"
+  exit 0
 else
-  fail "Pod ready-web not found in $NS"
+  echo "✗ Pod ready-web not found in $NS"
+  exit 1
 fi
