@@ -432,19 +432,12 @@
           "description": "Rollout is complete",
           "verificationScriptFile": "q8_s2_validate_rollback_complete.sh",
           "expectedOutput": "0",
-          "weightage": 3
+          "weightage": 5
         },
         {
           "id": "3",
           "description": "Rollback history available",
           "verificationScriptFile": "q8_s3_rollback_history_available.sh",
-          "expectedOutput": "0",
-          "weightage": 2
-        },
-        {
-          "id": "4",
-          "description": "Rollback completed successfully",
-          "verificationScriptFile": "q8_s4_rollback_completed_successfully.sh",
           "expectedOutput": "0",
           "weightage": 2
         }
@@ -719,7 +712,7 @@
     {
       "id": "15",
       "question": "In the `resource-quotas` namespace, Create a ResourceQuota named `ns-quota` in a new namespace `quota-ns` that limits the total number of pods allowed in the namespace to 5.",
-      "namespace": "resource-quotas",
+      "namespace": "quota-ns",
       "machineHostname": "ckad9999",
       "concepts": [
         "resource-quotas",
@@ -785,19 +778,12 @@
           "description": "Liveness probe configured correct",
           "verificationScriptFile": "q16_s2_validate_liveness_probe.sh",
           "expectedOutput": "0",
-          "weightage": 4
+          "weightage": 6
         },
         {
           "id": "3",
           "description": "Pod restarts on failure",
           "verificationScriptFile": "q16_s3_validate_pod_restarts.sh",
-          "expectedOutput": "0",
-          "weightage": 2
-        },
-        {
-          "id": "4",
-          "description": "Liveness probe is configured",
-          "verificationScriptFile": "q16_s4_liveness_probe_is_configured.sh",
           "expectedOutput": "0",
           "weightage": 2
         }
@@ -872,14 +858,7 @@
           "description": "Endpoints are populated",
           "verificationScriptFile": "q18_s3_validate_endpoints_populated.sh",
           "expectedOutput": "0",
-          "weightage": 4
-        },
-        {
-          "id": "4",
-          "description": "Service has endpoints",
-          "verificationScriptFile": "q18_s4_service_has_endpoints.sh",
-          "expectedOutput": "0",
-          "weightage": 2
+          "weightage": 6
         }
       ]
     },
@@ -901,24 +880,10 @@
         },
         {
           "id": "2",
-          "description": "Policy denies ingress correctly",
+          "description": "NetworkPolicy denies all ingress traffic to all pods",
           "verificationScriptFile": "q19_s2_validate_netpol_denies_ingress.sh",
           "expectedOutput": "0",
-          "weightage": 4
-        },
-        {
-          "id": "3",
-          "description": "Traffic is actually blocked",
-          "verificationScriptFile": "q19_s3_validate_traffic_blocked.sh",
-          "expectedOutput": "0",
-          "weightage": 3
-        },
-        {
-          "id": "4",
-          "description": "Network policy is enforced",
-          "verificationScriptFile": "q19_s4_network_policy_is_enforced.sh",
-          "expectedOutput": "0",
-          "weightage": 2
+          "weightage": 9
         }
       ]
     },
@@ -937,7 +902,7 @@
           "description": "PVC exists and Bound",
           "verificationScriptFile": "q20_s1_validate_pvc_exists.sh",
           "expectedOutput": "0",
-          "weightage": 3
+          "weightage": 5
         },
         {
           "id": "2",
@@ -952,13 +917,6 @@
           "verificationScriptFile": "q20_s3_validate_volume_writable.sh",
           "expectedOutput": "0",
           "weightage": 4
-        },
-        {
-          "id": "4",
-          "description": "PVC is bound",
-          "verificationScriptFile": "q20_s4_pvc_is_bound.sh",
-          "expectedOutput": "0",
-          "weightage": 2
         }
       ]
     },
