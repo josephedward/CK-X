@@ -25,7 +25,7 @@
         "assetPath": "assets/exams/ckad/003",
         "name": "CKAD Comprehensive Lab - 3",
         "category": "CKAD",
-        "description": "Third CKAD practice exam with 22 tasks, using single-cluster namespace isolation and partial-credit validation.",
+        "description": "Third CKAD practice exam with 22 tasks inspired by killer.sh.",
         "warmUpTimeInSeconds": 260,
         "difficulty": "Hard",
         "examDurationInMinutes": 120
