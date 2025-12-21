@@ -25,9 +25,19 @@
         "assetPath": "assets/exams/ckad/003",
         "name": "CKAD Comprehensive Lab - 3",
         "category": "CKAD",
-        "description": "Third CKAD practice exam with 22 tasks, using single-cluster namespace isolation and partial-credit validation.",
+        "description": "Third CKAD practice exam with 22 tasks inspired by killer.sh.",
         "warmUpTimeInSeconds": 260,
         "difficulty": "Hard",
+        "examDurationInMinutes": 120
+      },
+      {
+        "id": "ckad-004",
+        "assetPath": "assets/exams/ckad/004",
+        "name": "CKAD Comprehensive Lab - 4",
+        "category": "CKAD",
+        "description": "Hands-on exercises covering Kubernetes application design, multi-container pods, volumes, labels/selectors, and core troubleshooting tasks from https://github.com/dgkanatsios/CKAD-exercises",
+        "warmUpTimeInSeconds": 260,
+        "difficulty": "High",
         "examDurationInMinutes": 120
       },
       {

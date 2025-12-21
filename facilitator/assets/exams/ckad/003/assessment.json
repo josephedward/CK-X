@@ -123,7 +123,7 @@
         {"id": "6", "description": "Curl output saved to /opt/course/exam3/q10/service_test.html", "verificationScriptFile": "q10_s3_validate_response_file.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "7", "description": "Curl output contains nginx welcome text", "verificationScriptFile": "q10_s8_validate_response_contains_nginx.sh", "expectedOutput": "0", "weightage": 1},
         {"id": "8", "description": "Logs file saved to /opt/course/exam3/q10/service_test.log", "verificationScriptFile": "q10_s4_validate_logs_file.sh", "expectedOutput": "0", "weightage": 1},
-        {"id": "9", "description": "Logs show an HTTP GET request", "verificationScriptFile": "q10_s9_validate_logs_contains_get.sh", "expectedOutput": "0", "weightage": 1},
+        {"id": "9", "description": "Logs show an HTTP GET request", "verificationScriptFile": "q10_s9_validate_logs_contains_get.sh", "expectedOutput": "0", "weightage": 1}
 
       ]
     },
