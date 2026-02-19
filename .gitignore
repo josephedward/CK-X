@@ -61,6 +61,3 @@ coverage/
 terraform.tfstate
 terraform.tfstate.backup
 .terragrunt-cache/ 
-scripts/dev/rebuild-facilitator.sh
-scripts/dev/up-dev.sh
-scripts/release/release-facilitator.sh
